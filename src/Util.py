@@ -2,6 +2,7 @@ from pygame import image
 
 BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 TRAILRED = (191, 19, 19)
 INVISIBLEREDTRAIL = (100, 19, 19)
 BOOSTREDTRAIL = (191, 19, 19) #(255, 209, 209)
@@ -50,9 +51,9 @@ def hasValue(x):
 def getTrailColor(color, powerup):
     if (color == "RED"):
         if (powerup == True):
-            return BOOSTREDTRAIL
+            return RED
         else:
-            return TRAILRED
+            return RED
 
 def getImages(color):
     if (color == "RED"):
