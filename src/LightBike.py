@@ -97,7 +97,7 @@ class Game(object):
 
     def display_frame(self, screen):
         """ Display everything to the screen for the game. """
-        screen.fill(WHITE)
+        self.clear_screen(screen)
 
         if self.game_over:
             # font = pygame.font.Font("Serif", 25)
@@ -111,10 +111,21 @@ class Game(object):
             self.trail_list.draw(screen)
             self.player_list.draw(screen)
 
-
-
         pygame.display.update()
 
+    def clear_screen(self, screen):
+        screen.fill(BACKGROUND)
+
+        for i in range(0, GRIDLINES):
+            pygame.draw.line(screen, GRIDCOLOR, [0, i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2], [SCREEN_WIDTH, i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2], 1)
+        for j in range(0, GRIDLINES):
+            pygame.draw.line(screen, GRIDCOLOR, [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2, 0], [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2, SCREEN_WIDTH], 1)
+
+        for i in range(0, GRIDLINES + 1):
+            pygame.draw.line(screen, BACKGROUND, [0, i * SCREEN_WIDTH / GRIDLINES ], [SCREEN_WIDTH, i * SCREEN_WIDTH / GRIDLINES ], int(SCREEN_WIDTH / GRIDLINES / 6))
+        for j in range(0, GRIDLINES + 1):
+            pygame.draw.line(screen, BACKGROUND, [j * SCREEN_WIDTH / GRIDLINES , 0],
+                             [j * SCREEN_WIDTH / GRIDLINES , SCREEN_WIDTH], int(SCREEN_WIDTH / GRIDLINES / 6))
 
 def main():
     """ Main program function. """

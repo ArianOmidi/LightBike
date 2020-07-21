@@ -2,6 +2,12 @@ BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
 RED   = (255,   0,   0)
 TRAILRED = (191, 19, 19)
+TRAILBLUE = (117, 164, 255)
+
+BACKGROUND = (10, 10, 10)
+GRIDCOLOR = (0, 25, 0)
+
+GRIDLINES = 10
 
 def sign(x):
     if (x == 0):
