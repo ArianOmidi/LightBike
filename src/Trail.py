@@ -21,15 +21,17 @@ class Trail(pygame.sprite.Sprite):
         self. setStartPos(start_pos)
 
     def endTrail(self):
-        # extendX = hasValue(self.dir[0]) * self.player.size
-        if (self.dir[0] > 0 or self.dir[1] > 0):
-            self.image = pygame.Surface(
-                (self.image.get_width() + hasValue(self.dir[0]) * (self.centering_factor + self.player.size), self.image.get_height() + hasValue(self.dir[1]) * (self.centering_factor + self.player.size)))
-        else:
-            extendX = hasValue(self.dir[0]) * self.player.size
-            extendY = hasValue(self.dir[1]) * self.player.size
-            self.image = pygame.Surface((self.image.get_width() + extendX, self.image.get_height() + extendY))
+        extendX = hasValue(self.dir[0]) * (self.centering_factor + self.player.size)
+        extendY = hasValue(self.dir[1]) * self.player.size
 
+        old_pos = (self.rect.x, self.rect.y)
+
+        self.image = pygame.Surface((self.image.get_width() + extendX, self.image.get_height() + extendY))
+        self.rect = self.image.get_rect()
+        self.rect.x = old_pos[0]
+        self.rect.y = old_pos[1]
+
+        if (self.dir[0] < 0 or self.dir[1] < 0):
             self.rect.x -= extendX
             self.rect.y -= extendY
 
@@ -38,24 +40,28 @@ class Trail(pygame.sprite.Sprite):
         self.rect.y = pos[1]
 
         if (self.dir[0] > 0):
-            self.rect.y += self.centering_factor
             self.rect.x += self.centering_factor
-        elif (self.dir[0] < 0):
             self.rect.y += self.centering_factor
-            self.rect.x += self.player.size - self.centering_factor
+        elif (self.dir[0] < 0):
+            self.rect.x += 2 * self.player.size  - self.centering_factor
+            self.rect.y += self.centering_factor
         elif (self.dir[1] > 0):
             self.rect.x += self.centering_factor
             self.rect.y += self.centering_factor
         elif (self.dir[1] < 0):
             self.rect.x += self.centering_factor
-            self.rect.y += self.player.size - self.centering_factor
+            self.rect.y += 2 * self.player.size - self.centering_factor
 
     def update(self):
         """ Automatically called when we need to move the block. """
-        # old_pos = (self.rect.x, self.rect.y)
+        old_pos = (self.rect.x, self.rect.y)
 
         self.image = pygame.Surface((self.image.get_width() + abs(self.dir[0]), self.image.get_height() + abs(self.dir[1])))
         self.image.fill(self.color)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = old_pos[0]
+        self.rect.y = old_pos[1]
 
         if (self.dir[0] < 0 or self.dir[1] < 0):
             self.rect.x += self.dir[0]

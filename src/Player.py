@@ -1,7 +1,7 @@
 import pygame
 from Trail import *
 from LightBike import *
-trailSize = 6
+trailSize = 8
 
 class Player(pygame.sprite.Sprite):
 
@@ -35,13 +35,7 @@ class Player(pygame.sprite.Sprite):
     def newTrail(self):
         self.activeTrail.endTrail()
         self.lastActiveTrail = self.activeTrail
-
-        if ( self.velocity[0] < 0):
-            self.activeTrail = Trail(self, (self.rect.x + self.size, self.rect.y), trailSize)
-        elif (self.velocity[1] < 0):
-            self.activeTrail = Trail(self, (self.rect.x, self.rect.y + self.size), trailSize)
-        else:
-            self.activeTrail = Trail(self, (self.rect.x, self.rect.y), trailSize)
+        self.activeTrail = Trail(self, (self.rect.x, self.rect.y), trailSize)
 
     def setOrientation(self, new_vel):
         if (new_vel[0] != 0):
