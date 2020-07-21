@@ -2,15 +2,12 @@ import pygame
 import random
 from Player import *
 from Trail import *
-
-BLACK = (  0,   0,   0)
-WHITE = (255, 255, 255)
-RED   = (255,   0,   0)
+from Util import *
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
 
-PLAYER_SIZE = 20
+PLAYER_SIZE = 11
 PLAYER_STARTING_POS = (0, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
 VELOCITY = 2
 
@@ -31,18 +28,8 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
         self.all_sprites_list = pygame.sprite.Group()
 
-        # # Create the block sprites
-        # for i in range(50):
-        #     initX = random.randrange(SCREEN_WIDTH - PLAYER_SIZE)
-        #     initY = random.randrange(0, SCREEN_HEIGHT - PLAYER_SIZE)
-        #
-        #     block = Trail(BLACK, initX, initY, PLAYER_SIZE)
-        #
-        #     self.block_list.add(block)
-        #     self.all_sprites_list.add(block)
-
         # Create the player
-        self.player = Player(RED, PLAYER_STARTING_POS[0], PLAYER_STARTING_POS[1], VELOCITY, PLAYER_SIZE)
+        self.player = Player(RED, PLAYER_STARTING_POS[0], PLAYER_STARTING_POS[1], VELOCITY, PLAYER_SIZE, TRAILRED)
         self.all_sprites_list.add(self.player)
         self.player_list.add(self.player)
         # TODO
@@ -103,7 +90,6 @@ class Game(object):
 
                     self.score += 1
                     print(self.score)
-                    player.color = BLACK
                     # You can do something with "block" here.
                 #
                 # if len(self.block_list) == 0:
@@ -122,8 +108,9 @@ class Game(object):
             screen.blit(text, [center_x, center_y])
 
         if not self.game_over:
-            self.player_list.draw(screen)
             self.trail_list.draw(screen)
+            self.player_list.draw(screen)
+
 
 
         pygame.display.update()

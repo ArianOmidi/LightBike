@@ -1,19 +1,21 @@
 import pygame
 from Trail import *
 from LightBike import *
-trailSize = 8
+trailSize = 3
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, color, start_x, start_y, velocity, size):
+    def __init__(self, color, start_x, start_y, velocity, size, trailColor):
         # Call parent class constructor
         super().__init__()
 
         self.color = color
+        self.trailColor = trailColor
         self.size = size
 
-        self.image = pygame.Surface([2 * size, size])
-        self.image.fill(color)
+        self.image = pygame.image.load("../resources/RedCarR.png")
+        self.image.set_colorkey(WHITE)
+        # self.image.fill(color)
         # self.image.fill(WHITE)
         # self.image.set_colorkey(WHITE)
 
@@ -28,7 +30,7 @@ class Player(pygame.sprite.Sprite):
 
     def setVelocity(self, velocity):
         """ Change the speed of the player"""
-        self.setOrientation(velocity)
+        self.setImage(velocity)
         self.velocity = velocity
         self.newTrail()
 
@@ -37,24 +39,27 @@ class Player(pygame.sprite.Sprite):
         self.lastActiveTrail = self.activeTrail
         self.activeTrail = Trail(self, (self.rect.x, self.rect.y), trailSize)
 
-    def setOrientation(self, new_vel):
+    def setImage(self, new_vel):
         if (new_vel[0] != 0):
-            self.image = pygame.Surface([2 * self.size, self.size])
-
             if (new_vel[0] < 0):
+                self.image = pygame.image.load(getImages(self.color)[3])
                 self.rect.x -= self.size
+            else:
+                self.image = pygame.image.load(getImages(self.color)[1])
+
             if (self.velocity[1] > 0):
                 self.rect.y += self.size
-
         else:
-            self.image = pygame.Surface([self.size, 2 * self.size])
-
             if (new_vel[1] < 0):
+                self.image = pygame.image.load(getImages(self.color)[0])
                 self.rect.y -= self.size
+            else:
+                self.image = pygame.image.load(getImages(self.color)[2])
+
             if (self.velocity[0] > 0):
                 self.rect.x += self.size
 
-        self.image.fill(self.color)
+        self.image.set_colorkey(WHITE)
 
     def update(self):
         """ Find a new position for the player"""
@@ -62,15 +67,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.velocity[1]
 
         self.activeTrail.update()
-
-        # old_pos = (self.rect.x, self.rect.y)
-        #
-        #
-        # self.image = pygame.Surface((self.image.get_width() + self.velocity[0], self.image.get_height() + self.velocity[1]))
-        # self.image.fill(self.color)
-        # self.rect = self.image.get_rect()
-        # self.rect.x = old_pos[0]
-        # self.rect.y = old_pos[1]
 
 
 
