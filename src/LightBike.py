@@ -108,6 +108,11 @@ class Game(object):
             self.player_list.update()
 
             for player in self.player_list:
+
+                if not self.trail_list.__contains__(player.activeTrail):
+                    self.addTrail(player)
+
+
                 # See if the player has collided with anything.
                 trail_hit_list = pygame.sprite.spritecollide(player, self.trail_list, False)
 

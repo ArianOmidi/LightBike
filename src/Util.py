@@ -11,8 +11,8 @@ GRIDCOLOR = (0, 25, 0)
 GRIDLINES = 10
 
 PLAYERLIVES = 3
-SPEEDBOOSTFACTOR = 2.0
-POWERUPTIME = 5
+SPEEDBOOSTFACTOR = 3
+POWERUPTIME = 4
 
 # --- IMAGES --- #
 
@@ -43,9 +43,12 @@ def hasValue(x):
 
 # --- GETTERS --- #
 
-def getTrailColor(color):
+def getTrailColor(color, powerup):
     if (color == "RED"):
-        return TRAILRED
+        if (powerup == True):
+            return TRAILBLUE
+        else:
+            return TRAILRED
 
 def getImages(color):
     if (color == "RED"):

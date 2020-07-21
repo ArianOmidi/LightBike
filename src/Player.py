@@ -16,7 +16,6 @@ class Player(pygame.sprite.Sprite):
 
         self.powerup_active = False
         self.powerups_remaining = PLAYERLIVES
-        self.powerup_time = POWERUPTIME * 60
         self.speed = velocity
 
         self.init_velocity = velocity
@@ -30,8 +29,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = start_pos[1]
 
         self.velocity = (self.speed, 0)
+        self.activeTrail = None
 
-        self.activeTrail = Trail(self, getTrailColor(color), start_pos, trailSize)
+        self.newTrail()
 
     def death(self):
         self.lives -= 1
@@ -46,20 +46,21 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def powerup(self):
-        self.powerup_active = True
+        if self.speed == self.init_velocity:
+            self.powerup_active = True
+            self.powerup_time = POWERUPTIME * 60
 
-        self.speed = int(self.speed * SPEEDBOOSTFACTOR)
-        self.setVelocity(self.velocity)
+            self.speed = int(self.init_velocity * SPEEDBOOSTFACTOR)
+            self.setVelocity(self.velocity)
 
     def check_powerup(self):
-        if (self.powerup_time < 0):
+        if (self.powerup_time > 0):
             self.powerup_time -= 1
         else:
-            self.powerup_time = POWERUPTIME * 60
             self.powerup_active = False
             self.speed = self.init_velocity
 
-            self.velocity = (sign(self.velocity[0]) * self.speed, sign(self.velocity[1]) * self.speed)
+            self.setVelocity(self.velocity)
 
     def setVelocity(self, velocity):
         """ Change the speed of the player"""
@@ -68,9 +69,10 @@ class Player(pygame.sprite.Sprite):
         self.newTrail()
 
     def newTrail(self):
-        self.activeTrail.endTrail()
+        if self.activeTrail != None:
+            self.activeTrail.endTrail()
         self.lastActiveTrail = self.activeTrail
-        self.activeTrail = Trail(self, getTrailColor(self.color), (self.rect.x, self.rect.y), trailSize)
+        self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
 
     def setImage(self, new_vel):
         if (new_vel[0] != 0):
@@ -104,8 +106,9 @@ class Player(pygame.sprite.Sprite):
 
         self.velocity = (self.init_velocity, 0)
         self.speed = self.init_velocity
+        self.powerup_active = False
 
-        self.activeTrail = Trail(self, getTrailColor(self.color), self.init_pos, trailSize)
+        self.newTrail()
         self.lastActiveTrail = None
 
     def update(self):
