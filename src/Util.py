@@ -3,11 +3,15 @@ from pygame import image
 BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
 TRAILRED = (191, 19, 19)
+INVISIBLEREDTRAIL = (100, 19, 19)
+BOOSTREDTRAIL = (191, 19, 19) #(255, 209, 209)
 TRAILBLUE = (117, 164, 255)
 
 BACKGROUND = (10, 10, 10)
 GRIDCOLOR = (0, 25, 0)
 
+trailSize = 3
+playerWidth = 11
 GRIDLINES = 10
 
 PLAYERLIVES = 3
@@ -46,10 +50,16 @@ def hasValue(x):
 def getTrailColor(color, powerup):
     if (color == "RED"):
         if (powerup == True):
-            return TRAILBLUE
+            return BOOSTREDTRAIL
         else:
             return TRAILRED
 
 def getImages(color):
     if (color == "RED"):
         return ["../resources/RedCarU.png", "../resources/RedCarR.png", "../resources/RedCarD.png", "../resources/RedCarL.png"]
+
+def isTrue(bool):
+    if bool:
+        return 1
+    else:
+        return 0

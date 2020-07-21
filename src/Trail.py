@@ -11,6 +11,8 @@ class Trail(pygame.sprite.Sprite):
         self.size = size
         self.dir = player.velocity
 
+        self.is_powerup_trail = self.player.powerup_active
+
         self.centering_factor = player.size / 2 - size / 2
 
         self.image = pygame.Surface([hasValue(self.dir[1]) * size, hasValue(self.dir[0]) * size])
@@ -44,6 +46,8 @@ class Trail(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((self.image.get_width() + extendX, self.image.get_height() + extendY))
         self.image.fill(self.color)
+        self.add_boost_stripe()
+
 
         self.rect = self.image.get_rect()
         self.rect.x = old_pos[0]
@@ -60,13 +64,24 @@ class Trail(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.image.get_width() + abs(self.dir[0]), self.image.get_height() + abs(self.dir[1])))
         self.image.fill(self.color)
 
+        self.add_boost_stripe()
+
+
         self.rect = self.image.get_rect()
         self.rect.x = old_pos[0]
         self.rect.y = old_pos[1]
 
+
         if (self.dir[0] < 0 or self.dir[1] < 0):
             self.rect.x += self.dir[0]
             self.rect.y += self.dir[1]
+
+    def add_boost_stripe(self):
+        if not (self.is_powerup_trail):
+            stripe = pygame.Surface((self.image.get_width() - 2, self.image.get_height() - 2))
+            stripe.fill(BLACK)
+
+            self.image.blit(stripe, (1, 1))
 
 
 

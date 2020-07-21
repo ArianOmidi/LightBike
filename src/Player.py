@@ -1,8 +1,7 @@
 import pygame
 from Trail import *
 from LightBike import *
-trailSize = 3
-playerWidth = 11
+
 
 class Player(pygame.sprite.Sprite):
 
