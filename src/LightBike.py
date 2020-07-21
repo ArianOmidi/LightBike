@@ -1,11 +1,12 @@
 import pygame
 import random
+from time import sleep
 from Player import *
 from Trail import *
 from Util import *
 
 SCREEN_HEIGHT = 700
-SCREEN_WIDTH = 700
+SCREEN_WIDTH = 1400
 
 PLAYER_SIZE = 11
 PLAYER_STARTING_POS = (0, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
@@ -21,23 +22,22 @@ class Game(object):
         the game. """
 
         self.score = 0
+        self.counter = 0
         self.game_over = False
+        self.round_in_progress = False
 
         # Create sprite lists
         self.trail_list = pygame.sprite.Group()
         self.player_list = pygame.sprite.Group()
-        self.all_sprites_list = pygame.sprite.Group()
 
         # Create the player
-        self.player = Player(RED, PLAYER_STARTING_POS[0], PLAYER_STARTING_POS[1], VELOCITY, PLAYER_SIZE, TRAILRED)
-        self.all_sprites_list.add(self.player)
+        self.player = Player("RED", PLAYER_STARTING_POS, VELOCITY)
         self.player_list.add(self.player)
-        # TODO
-        self.addTrail()
 
-    def addTrail(self):
-        if (self.all_sprites_list.__contains__(self.player.activeTrail) == False):
-            self.all_sprites_list.add(self.player.activeTrail)
+        self.addTrail(self.player)
+
+    def addTrail(self, player):
+        if (self.trail_list.__contains__(player.activeTrail) == False):
             self.trail_list.add(self.player.activeTrail)
 
 
@@ -54,33 +54,61 @@ class Game(object):
                     self.__init__()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.player.setVelocity((-VELOCITY, 0))
-                    self.addTrail()
-                elif event.key == pygame.K_RIGHT:
-                    self.player.setVelocity((VELOCITY, 0))
-                    self.addTrail()
-                elif event.key == pygame.K_UP:
-                    self.player.setVelocity((0, -VELOCITY))
-                    self.addTrail()
-                elif event.key == pygame.K_DOWN:
-                    self.player.setVelocity((0, VELOCITY))
-                    self.addTrail()
+                if (self.player.velocity[0] == 0):
+                    if event.key == pygame.K_LEFT:
+                            self.player.setVelocity((-VELOCITY, 0))
+                            self.addTrail(self.player)
+                    elif event.key == pygame.K_RIGHT:
+                        self.player.setVelocity((VELOCITY, 0))
+                        self.addTrail(self.player)
+                else:
+                    if event.key == pygame.K_UP:
+                        self.player.setVelocity((0, -VELOCITY))
+                        self.addTrail(self.player)
+                    elif event.key == pygame.K_DOWN:
+                        self.player.setVelocity((0, VELOCITY))
+                        self.addTrail(self.player)
 
+                if event.key == pygame.K_SPACE:
+                    self.player.powerup()
+                    self.addTrail(self.player)
 
         return False
+
+    def new_round(self, screen):
+        self.counter += 1
+
+        # if (self.counter < 60):
+        #     screen.blit(ONE, (0,0))
+        #     return
+        # elif (self.counter < 120):
+        #     screen.blit(TWO, (0, 0))
+        #     return
+        # elif (self.counter < 180):
+        #     screen.blit(THREE, (0, 0))
+        #     return
+
+        self.trail_list.empty()
+
+        for player in self.player_list:
+            player.reset()
+            self.trail_list.add(player.activeTrail)
+
+        self.round_in_progress = True
+        self.counter = 0
+
 
     def run_logic(self):
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
         """
-        if not self.game_over:
-            # Move all the sprites
+        if self.game_over == False and self.round_in_progress:
+            # Move the player
             self.player_list.update()
 
             for player in self.player_list:
-                # See if the player block has collided with anything.
+                # See if the player has collided with anything.
                 trail_hit_list = pygame.sprite.spritecollide(player, self.trail_list, False)
 
                 # Check the list of collisions.
@@ -90,10 +118,11 @@ class Game(object):
 
                     self.score += 1
                     print(self.score)
+
+                    self.game_over = player.death()
+                    self.round_in_progress = False
+                    break
                     # You can do something with "block" here.
-                #
-                # if len(self.block_list) == 0:
-                #     self.game_over = True
 
     def display_frame(self, screen):
         """ Display everything to the screen for the game. """
@@ -102,14 +131,15 @@ class Game(object):
         if self.game_over:
             # font = pygame.font.Font("Serif", 25)
             font = pygame.font.SysFont("serif", 25)
-            text = font.render("Game Over, click to restart", True, BLACK)
+            text = font.render("Game Over, click to restart", True, WHITE)
             center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
             center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
             screen.blit(text, [center_x, center_y])
+        elif self.round_in_progress == False:
+            self.new_round(screen)
 
-        if not self.game_over:
-            self.trail_list.draw(screen)
-            self.player_list.draw(screen)
+        self.trail_list.draw(screen)
+        self.player_list.draw(screen)
 
         pygame.display.update()
 
@@ -135,7 +165,7 @@ def main():
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
 
-    pygame.display.set_caption("LightBike")
+    pygame.display.set_caption("Light Bike")
     pygame.mouse.set_visible(True)
 
     # Create our objects and set the data

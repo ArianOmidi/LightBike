@@ -3,17 +3,17 @@ from Util import *
 
 class Trail(pygame.sprite.Sprite):
     """ This class represents a simple block the player collects. """
-    def __init__(self, player, start_pos, size):
+    def __init__(self, player, color, start_pos, size):
         """ Constructor, create the image of the block. """
         super().__init__()
         self.player = player
-        self.color = player.trailColor
+        self.color = color
         self.size = size
         self.dir = player.velocity
 
         self.centering_factor = player.size / 2 - size / 2
 
-        self.image = pygame.Surface([ hasValue(self.dir[1]) * size, hasValue(self.dir[0]) * size])
+        self.image = pygame.Surface([hasValue(self.dir[1]) * size, hasValue(self.dir[0]) * size])
         self.image.fill(self.color)
 
         self.rect = self.image.get_rect()
@@ -37,7 +37,7 @@ class Trail(pygame.sprite.Sprite):
             self.rect.y += 2 * self.player.size - self.centering_factor
 
     def endTrail(self):
-        extendX = hasValue(self.dir[0]) * (self.centering_factor + self.player.size)
+        extendX = hasValue(self.dir[0]) * self.player.size
         extendY = hasValue(self.dir[1]) * self.player.size
 
         old_pos = (self.rect.x, self.rect.y)
