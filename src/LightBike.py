@@ -31,7 +31,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the player
-        self.player = Booster("RED", PLAYER_STARTING_POS, VELOCITY)
+        self.player = Invisible("RED", PLAYER_STARTING_POS, VELOCITY)
         self.player_list.add(self.player)
 
     # def addTrail(self, player):
@@ -101,9 +101,12 @@ class Game(object):
 
             for player in self.player_list:
 
-                if not self.trail_list.__contains__(player.activeTrail):
+                if not (self.trail_list.__contains__(player.activeTrail) or player.activeTrail is None) :
                     self.trail_list.add(self.player.activeTrail)
 
+                # If player invulnerable skip over hit detection
+                if player.invulnerable:
+                    continue
 
                 # See if the player has collided with anything.
                 trail_hit_list = pygame.sprite.spritecollide(player, self.trail_list, False)

@@ -71,6 +71,9 @@ def getPowerup(color):
 def getImages(color):
     if (color == "RED"):
         return ["../resources/RedCarU.png", "../resources/RedCarR.png", "../resources/RedCarD.png", "../resources/RedCarL.png"]
+    if (color == "BLUE"):
+        return ["../resources/BlueCarU.png", "../resources/BlueCarR.png", "../resources/BlueCarD.png",
+                "../resources/BlueCarL.png"]
 
 def isTrue(bool):
     if bool:
