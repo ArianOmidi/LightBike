@@ -64,6 +64,10 @@ def getTrailColor(color, powerup):
         else:
             return RED
 
+def getPowerup(color):
+    if (color == "RED"):
+        return "BOOST"
+
 def getImages(color):
     if (color == "RED"):
         return ["../resources/RedCarU.png", "../resources/RedCarR.png", "../resources/RedCarD.png", "../resources/RedCarL.png"]
@@ -73,5 +77,6 @@ def isTrue(bool):
         return 1
     else:
         return 0
+
 
 

@@ -13,10 +13,6 @@ class Player(pygame.sprite.Sprite):
         self.size = playerWidth
         self.lives = PLAYERLIVES
 
-        self.powerup_active = False
-        self.powerups_remaining = PLAYERLIVES
-        self.speed = velocity
-
         self.init_velocity = velocity
         self.init_pos = start_pos
 
@@ -27,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = start_pos[0]
         self.rect.y = start_pos[1]
 
-        self.velocity = (self.speed, 0)
+        self.velocity = (velocity, 0)
         self.activeTrail = None
 
         self.newTrail()
@@ -45,26 +41,15 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def powerup(self):
-        if self.speed == self.init_velocity:
-            self.powerup_active = True
-            self.powerup_time = POWERUPTIME * FPS
-
-            self.speed = int(self.init_velocity * SPEEDBOOSTFACTOR)
-            self.setVelocity(self.velocity)
+        print("start")
 
     def check_powerup(self):
-        if (self.powerup_time > 0):
-            self.powerup_time -= 1
-        else:
-            self.powerup_active = False
-            self.speed = self.init_velocity
-
-            self.setVelocity(self.velocity)
+        print("check")
 
     def setVelocity(self, velocity):
         """ Change the speed of the player"""
         self.setImage(velocity)
-        self.velocity = (sign(velocity[0]) * self.speed, sign(velocity[1]) * self.speed)
+        self.velocity = velocity
         self.newTrail()
 
     def newTrail(self):
@@ -103,10 +88,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = self.init_pos[0]
         self.rect.y = self.init_pos[1]
 
-        self.velocity = (self.init_velocity, 0)
-        self.speed = self.init_velocity
-        self.powerup_active = False
-
         self.newTrail()
         self.lastActiveTrail = None
 
@@ -119,5 +100,48 @@ class Player(pygame.sprite.Sprite):
 
         if self.powerup_active:
             self.check_powerup()
+
+
+class Booster(Player):
+    def __init__(self, color, start_pos, velocity):
+        self.power = "BOOST"
+        self.powerup_active = False
+        self.powerups_remaining = PLAYERLIVES
+        self.speed = velocity
+
+        super().__init__(color, start_pos, velocity)
+
+    def reset(self):
+        self.velocity = (self.init_velocity, 0)
+        self.speed = self.init_velocity
+        self.powerup_active = False
+
+        super().reset()
+
+    def setVelocity(self, velocity):
+        self.setImage(velocity)
+        self.velocity = (sign(velocity[0]) * self.speed, sign(velocity[1]) * self.speed)
+        self.newTrail()
+
+    def powerup(self):
+        if self.powerup_active == False:
+            self.powerup_active = True
+            self.powerup_time = POWERUPTIME * FPS
+
+            self.speed = int(self.init_velocity * SPEEDBOOSTFACTOR)
+            self.setVelocity(self.velocity)
+
+    def check_powerup(self):
+        if (self.powerup_time > 0):
+            self.powerup_time -= 1
+        else:
+            self.powerup_active = False
+            self.speed = self.init_velocity
+
+            self.setVelocity(self.velocity)
+
+
+
+
 
 

@@ -31,7 +31,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the player
-        self.player = Player("RED", PLAYER_STARTING_POS, VELOCITY)
+        self.player = Booster("RED", PLAYER_STARTING_POS, VELOCITY)
         self.player_list.add(self.player)
 
     # def addTrail(self, player):
