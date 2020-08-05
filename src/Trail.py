@@ -46,8 +46,8 @@ class Trail(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((self.image.get_width() + extendX, self.image.get_height() + extendY))
         self.image.fill(self.color)
-        self.add_boost_stripe()
 
+        self.add_boost_stripe()
 
         self.rect = self.image.get_rect()
         self.rect.x = old_pos[0]
@@ -77,11 +77,20 @@ class Trail(pygame.sprite.Sprite):
             self.rect.y += self.dir[1]
 
     def add_boost_stripe(self):
-        if not (self.is_powerup_trail):
+        if (self.is_powerup_trail):
+            vel = self.dir
+            # divider = 3
+            # num_of_dots = int((self.image.get_width() * hasValue(self.dir[0]) + self.image.get_height() * hasValue(self.dir[1])) / trailSize / divider)
+            #
+            # for i in range(0, num_of_dots + 1):
+            #     dot = pygame.Surface((trailSize, trailSize))
+            #     dot.fill(BLACK)
+            #
+            #     self.image.blit(dot, (divider * trailSize * i * hasValue(self.dir[0]), divider * trailSize * i * hasValue(self.dir[1])))
+        else:
             stripe = pygame.Surface((self.image.get_width() - 2, self.image.get_height() - 2))
             stripe.fill(BLACK)
 
             self.image.blit(stripe, (1, 1))
-
 
 

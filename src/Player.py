@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
     def powerup(self):
         if self.speed == self.init_velocity:
             self.powerup_active = True
-            self.powerup_time = POWERUPTIME * 60
+            self.powerup_time = POWERUPTIME * FPS
 
             self.speed = int(self.init_velocity * SPEEDBOOSTFACTOR)
             self.setVelocity(self.velocity)

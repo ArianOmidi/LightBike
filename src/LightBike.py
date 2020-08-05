@@ -34,12 +34,9 @@ class Game(object):
         self.player = Player("RED", PLAYER_STARTING_POS, VELOCITY)
         self.player_list.add(self.player)
 
-        self.addTrail(self.player)
-
-    def addTrail(self, player):
-        if (self.trail_list.__contains__(player.activeTrail) == False):
-            self.trail_list.add(self.player.activeTrail)
-
+    # def addTrail(self, player):
+    #     if (self.trail_list.__contains__(player.activeTrail) == False):
+    #         self.trail_list.add(self.player.activeTrail)
 
     def process_events(self):
         """ Process all of the events. Return a "True" if we need
@@ -57,21 +54,16 @@ class Game(object):
                 if (self.player.velocity[0] == 0):
                     if event.key == pygame.K_LEFT:
                             self.player.setVelocity((-VELOCITY, 0))
-                            self.addTrail(self.player)
                     elif event.key == pygame.K_RIGHT:
                         self.player.setVelocity((VELOCITY, 0))
-                        self.addTrail(self.player)
                 else:
                     if event.key == pygame.K_UP:
                         self.player.setVelocity((0, -VELOCITY))
-                        self.addTrail(self.player)
                     elif event.key == pygame.K_DOWN:
                         self.player.setVelocity((0, VELOCITY))
-                        self.addTrail(self.player)
 
                 if event.key == pygame.K_SPACE:
                     self.player.powerup()
-                    self.addTrail(self.player)
 
         return False
 
@@ -110,7 +102,7 @@ class Game(object):
             for player in self.player_list:
 
                 if not self.trail_list.__contains__(player.activeTrail):
-                    self.addTrail(player)
+                    self.trail_list.add(self.player.activeTrail)
 
 
                 # See if the player has collided with anything.
@@ -192,7 +184,7 @@ def main():
         game.display_frame(screen)
 
         # Pause for the next frame
-        clock.tick(60)
+        clock.tick(FPS)
 
     # Close window and exit
     pygame.quit()
