@@ -48,6 +48,13 @@ def hasValue(x):
     else:
         return 1
 
+def ceil(x):
+    tmp = int(x)
+
+    if (x == tmp):
+        return x
+    return tmp + 1
+
 # --- GETTERS --- #
 
 def getTrailColor(color, powerup):
@@ -66,3 +73,5 @@ def isTrue(bool):
         return 1
     else:
         return 0
+
+

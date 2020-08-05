@@ -45,9 +45,7 @@ class Trail(pygame.sprite.Sprite):
         old_pos = (self.rect.x, self.rect.y)
 
         self.image = pygame.Surface((self.image.get_width() + extendX, self.image.get_height() + extendY))
-        self.image.fill(self.color)
-
-        self.add_boost_stripe()
+        self.add_design()
 
         self.rect = self.image.get_rect()
         self.rect.x = old_pos[0]
@@ -62,9 +60,7 @@ class Trail(pygame.sprite.Sprite):
         old_pos = (self.rect.x, self.rect.y)
 
         self.image = pygame.Surface((self.image.get_width() + abs(self.dir[0]), self.image.get_height() + abs(self.dir[1])))
-        self.image.fill(self.color)
-
-        self.add_boost_stripe()
+        self.add_design()
 
 
         self.rect = self.image.get_rect()
@@ -76,17 +72,27 @@ class Trail(pygame.sprite.Sprite):
             self.rect.x += self.dir[0]
             self.rect.y += self.dir[1]
 
-    def add_boost_stripe(self):
+    def add_design(self):
+        self.image.fill(self.color)
+
         if (self.is_powerup_trail):
-            vel = self.dir
-            # divider = 3
-            # num_of_dots = int((self.image.get_width() * hasValue(self.dir[0]) + self.image.get_height() * hasValue(self.dir[1])) / trailSize / divider)
-            #
-            # for i in range(0, num_of_dots + 1):
-            #     dot = pygame.Surface((trailSize, trailSize))
-            #     dot.fill(BLACK)
-            #
-            #     self.image.blit(dot, (divider * trailSize * i * hasValue(self.dir[0]), divider * trailSize * i * hasValue(self.dir[1])))
+            stripe = pygame.Surface((self.image.get_width() - 2, self.image.get_height() - 2))
+            stripe.fill(BLACK)
+
+            self.image.blit(stripe, (1, 1))
+
+            divider = 3
+            num_of_dots = ceil((self.image.get_width() * hasValue(self.dir[0]) + self.image.get_height() * hasValue(self.dir[1])) //  divider)
+
+            for i in range(0, num_of_dots):
+                dot = pygame.Surface((trailSize, trailSize))
+                dot.fill(BACKGROUND)
+
+                if (self.dir[0] > 0 or self.dir[1] > 0):
+                    self.image.blit(dot, (divider * trailSize * i * hasValue(self.dir[0]), divider * trailSize * i * hasValue(self.dir[1])))
+                else:
+                    self.image.blit(dot, (
+                        (self.image.get_width() - divider * trailSize * (i + 1)) * hasValue(self.dir[0]),  (self.image.get_height() - divider * trailSize * (i + 1)) * hasValue(self.dir[1])))
         else:
             stripe = pygame.Surface((self.image.get_width() - 2, self.image.get_height() - 2))
             stripe.fill(BLACK)
