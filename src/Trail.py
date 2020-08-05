@@ -77,7 +77,7 @@ class Trail(pygame.sprite.Sprite):
 
         if (self.is_powerup_trail):
             stripe = pygame.Surface((self.image.get_width() - 2, self.image.get_height() - 2))
-            stripe.fill(BLACK)
+            stripe.fill(BACKGROUND)
 
             self.image.blit(stripe, (1, 1))
 

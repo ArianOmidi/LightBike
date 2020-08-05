@@ -2,10 +2,11 @@ from pygame import image
 
 BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
+RED = (232, 12, 12)
+YELLOW = (255, 247, 0)
 TRAILRED = (191, 19, 19)
 INVISIBLEREDTRAIL = (100, 19, 19)
-BOOSTREDTRAIL = (255, 209, 209)
+BOOSTREDTRAIL = (237, 60, 47)
 TRAILBLUE = (117, 164, 255)
 
 BACKGROUND = (10, 10, 10)
@@ -28,9 +29,20 @@ TWO = image.load("../resources/2.png")
 THREE = image.load("../resources/3.png")
 EXPLOSION = image.load("../resources/explosion.png")
 
+BIKES = [   [image.load("../resources/RedCarU.png"), image.load("../resources/RedCarR.png"), image.load("../resources/RedCarD.png"), image.load("../resources/RedCarL.png")],
+            [image.load("../resources/BlueCarU.png"), image.load("../resources/BlueCarR.png"), image.load("../resources/BlueCarD.png"), image.load("../resources/BlueCarL.png")],
+            [image.load("../resources/YellowCarU.png"), image.load("../resources/YellowCarR.png"), image.load("../resources/YellowCarD.png"), image.load("../resources/YellowCarL.png")] ,
+            [image.load("../resources/GreenCarU.png"), image.load("../resources/GreenCarR.png"), image.load("../resources/GreenCarD.png"), image.load("../resources/GreenCarL.png")]
+         ]
+
 IMAGES = [ONE, TWO, THREE]
+
 for img in IMAGES:
     img.set_colorkey(BLACK)
+
+for color in BIKES:
+    for bike in color:
+        bike.set_colorkey(WHITE)
 
 # --- FUNCTIONS --- #
 
@@ -63,6 +75,8 @@ def getTrailColor(color, powerup):
             return RED
         else:
             return RED
+    if (color == "YELLOW"):
+        return YELLOW
 
 def getPowerup(color):
     if (color == "RED"):
@@ -70,10 +84,11 @@ def getPowerup(color):
 
 def getImages(color):
     if (color == "RED"):
-        return ["../resources/RedCarU.png", "../resources/RedCarR.png", "../resources/RedCarD.png", "../resources/RedCarL.png"]
+        return BIKES[0]
     if (color == "BLUE"):
-        return ["../resources/BlueCarU.png", "../resources/BlueCarR.png", "../resources/BlueCarD.png",
-                "../resources/BlueCarL.png"]
+        return BIKES[1]
+    if (color == "YELLOW"):
+        return BIKES[2]
 
 def isTrue(bool):
     if bool:
@@ -81,5 +96,7 @@ def isTrue(bool):
     else:
         return 0
 
+def getUnitVector(vector):
+    return (sign(vector[0]), sign(vector[1]))
 
 
