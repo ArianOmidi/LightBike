@@ -9,8 +9,8 @@ SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 1400
 
 PLAYER_SIZE = 11
-PLAYER_ONE_STARTING_POS = (0, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
-PLAYER_TWO_STARTING_POS = (SCREEN_WIDTH - 2 * PLAYER_SIZE, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
+PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 12 , (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
+PLAYER_TWO_STARTING_POS = (SCREEN_WIDTH * 11 / 12 - 2 * PLAYER_SIZE, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
 VELOCITY = 2
 
 class Game(object):
@@ -32,15 +32,12 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the player
-        self.player_one = Booster("RED", PLAYER_TWO_STARTING_POS, -VELOCITY)
-        # self.player_two = Invisible("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
+        self.player_one = Booster("RED", PLAYER_ONE_STARTING_POS, VELOCITY)
+        self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
-        # self.player_list.add(self.player_two)
+        self.player_list.add(self.player_two)
 
-    # def addTrail(self, player):
-    #     if (self.trail_list.__contains__(player.activeTrail) == False):
-    #         self.trail_list.add(self.player.activeTrail)
 
     def process_events(self):
         """ Process all of the events. Return a "True" if we need
@@ -67,24 +64,24 @@ class Game(object):
                     elif event.key == pygame.K_DOWN:
                         self.player_one.setVelocity((0, VELOCITY))
 
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_RETURN:
                     self.player_one.powerup()
 
                 # Player Two
 
-                # if (self.player_two.velocity[0] == 0):
-                #     if event.key == pygame.K_a:
-                #             self.player_two.setVelocity((-VELOCITY, 0))
-                #     elif event.key == pygame.K_d:
-                #         self.player_two.setVelocity((VELOCITY, 0))
-                # else:
-                #     if event.key == pygame.K_w:
-                #         self.player_two.setVelocity((0, -VELOCITY))
-                #     elif event.key == pygame.K_s:
-                #         self.player_two.setVelocity((0, VELOCITY))
-                #
-                # if event.key == pygame.K_RETURN:
-                #     self.player_two.powerup()
+                if (self.player_two.velocity[0] == 0):
+                    if event.key == pygame.K_a:
+                            self.player_two.setVelocity((-VELOCITY, 0))
+                    elif event.key == pygame.K_d:
+                        self.player_two.setVelocity((VELOCITY, 0))
+                else:
+                    if event.key == pygame.K_w:
+                        self.player_two.setVelocity((0, -VELOCITY))
+                    elif event.key == pygame.K_s:
+                        self.player_two.setVelocity((0, VELOCITY))
+
+                if event.key == pygame.K_SPACE:
+                    self.player_two.powerup()
 
         return False
 
@@ -102,6 +99,12 @@ class Game(object):
         #     return
 
         self.trail_list.empty()
+
+        # Create borders
+        self.trail_list.add(Border((0, 0), (SCREEN_WIDTH, BORDERWIDTH)))
+        self.trail_list.add(Border((0, SCREEN_HEIGHT - BORDERWIDTH), (SCREEN_WIDTH, BORDERWIDTH)))
+        self.trail_list.add(Border((0, 0), (BORDERWIDTH, SCREEN_HEIGHT)))
+        self.trail_list.add(Border((SCREEN_WIDTH - BORDERWIDTH, 0), (BORDERWIDTH, SCREEN_HEIGHT)))
 
         for player in self.player_list:
             player.reset()

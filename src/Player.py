@@ -145,6 +145,17 @@ class Booster(Player):
         self.velocity = (sign(velocity[0]) * self.speed, sign(velocity[1]) * self.speed)
         self.newTrail()
 
+    def newTrail(self):
+        if self.activeTrail != None:
+            self.activeTrail.endTrail()
+        self.lastActiveTrail = self.activeTrail
+
+        if self.powerup_active:
+            self.activeTrail = BoostTrail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+        else:
+            self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+
+
     # --- Powerup Functions --- #
 
     def powerup(self):
@@ -244,10 +255,51 @@ class Invisible(Player):
             self.setDesign(self.velocity, self.color)
 
 
+# --------------------------------------------------------------------------- #
+
+class Builder(Player):
+    def __init__(self, color, start_pos, velocity):
+        self.power = "WALL"
+        self.powerups_remaining = PLAYERLIVES
+
+        super().__init__(color, start_pos, velocity)
+
+    # --- Powerup Functions --- #
+
+    def powerup(self):
+        if self.powerup_active == False:
+            self.powerup_active = True
+            self.powerup_time = POWERUPTIME * FPS
+
+            self.newWall()
+
+    def check_powerup(self):
+        if (self.powerup_time > 0):
+            self.powerup_time -= 1
+            self.wall.update()
+        else:  # If powerup time is over turn off invisibility and set regular design
+            self.powerup_active = False
+
+            self.newTrail()
 
 
+    def newWall(self):
+        if self.activeTrail != None:
+            self.activeTrail.endTrail()
+        self.lastActiveTrail = self.activeTrail
+        self.activeTrail = Wall(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+        self.wall = self.activeTrail
 
+    def update(self):
+        """ Find a new position for the player"""
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
 
+        if (self.activeTrail is not None) and (not isinstance(self.activeTrail, Wall)):
+            self.activeTrail.update()
+
+        if self.powerup_active:
+            self.check_powerup()
 
 
 
