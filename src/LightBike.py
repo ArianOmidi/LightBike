@@ -31,12 +31,12 @@ class Game(object):
         self.trail_list = pygame.sprite.Group()
         self.player_list = pygame.sprite.Group()
 
-        # Create the player
-        self.player_one = Booster("RED", PLAYER_ONE_STARTING_POS, VELOCITY)
-        self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
+        # Create the players
+        self.player_one = Booster("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
+        # self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
-        self.player_list.add(self.player_two)
+        # self.player_list.add(self.player_two)
 
 
     def process_events(self):
@@ -64,24 +64,24 @@ class Game(object):
                     elif event.key == pygame.K_DOWN:
                         self.player_one.setVelocity((0, VELOCITY))
 
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_SPACE:
                     self.player_one.powerup()
 
                 # Player Two
-
-                if (self.player_two.velocity[0] == 0):
-                    if event.key == pygame.K_a:
-                            self.player_two.setVelocity((-VELOCITY, 0))
-                    elif event.key == pygame.K_d:
-                        self.player_two.setVelocity((VELOCITY, 0))
-                else:
-                    if event.key == pygame.K_w:
-                        self.player_two.setVelocity((0, -VELOCITY))
-                    elif event.key == pygame.K_s:
-                        self.player_two.setVelocity((0, VELOCITY))
-
-                if event.key == pygame.K_SPACE:
-                    self.player_two.powerup()
+                #
+                # if (self.player_two.velocity[0] == 0):
+                #     if event.key == pygame.K_a:
+                #             self.player_two.setVelocity((-VELOCITY, 0))
+                #     elif event.key == pygame.K_d:
+                #         self.player_two.setVelocity((VELOCITY, 0))
+                # else:
+                #     if event.key == pygame.K_w:
+                #         self.player_two.setVelocity((0, -VELOCITY))
+                #     elif event.key == pygame.K_s:
+                #         self.player_two.setVelocity((0, VELOCITY))
+                #
+                # if event.key == pygame.K_SPACE:
+                #     self.player_two.powerup()
 
         return False
 
@@ -143,7 +143,7 @@ class Game(object):
                     self.score += 1
                     print(self.score)
 
-                    self.game_over = player.death()
+                    # self.game_over = player.death()
                     self.round_in_progress = False
                     break
                     # You can do something with "block" here.
@@ -166,6 +166,21 @@ class Game(object):
         self.player_list.draw(screen)
 
         pygame.display.update()
+
+    # FOR TESTING
+    def check_hitboxes(self, screen):
+        sprite_list = pygame.sprite.Group()
+
+        for trail in self.trail_list:
+            hitbox = Hitbox(trail)
+            sprite_list.add(hitbox)
+
+        for player in self.player_list:
+            hitbox = Hitbox(player)
+            sprite_list.add(hitbox)
+
+        sprite_list.draw(screen)
+
 
     def clear_screen(self, screen):
         screen.fill(BACKGROUND)

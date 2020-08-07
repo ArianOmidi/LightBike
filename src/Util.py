@@ -11,11 +11,11 @@ TRAILBLUE =  (117, 164, 255)
 
 BACKGROUND = (10, 10, 10)
 GRIDCOLOR = (0, 25, 0)
-BORDERCOLOR = (0, 60, 0)
+BORDERCOLOR = (0, 50, 0)
 
 trailSize = 3
 playerWidth = 11
-BORDERWIDTH = 6
+BORDERWIDTH = 5
 GRIDLINES = 10
 # Boost trail divider
 divider = 3

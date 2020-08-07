@@ -39,24 +39,32 @@ class Player(pygame.sprite.Sprite):
     # --- Setters --- #
 
     def setImage(self, new_vel):
+        change_x = change_y = 0
+        old_pos = (self.rect.x, self.rect.y)
+
         if (new_vel[0] != 0):
             if (new_vel[0] < 0):
                 self.image = getImages(self.color)[3]
-                self.rect.x -= playerWidth
+                change_x = -playerWidth
             else:
                 self.image = getImages(self.color)[1]
 
             if (self.velocity[1] > 0):
-                self.rect.y += playerWidth
+                change_y = playerWidth
         else:
             if (new_vel[1] < 0):
                 self.image = getImages(self.color)[0]
-                self.rect.y -= playerWidth
+                change_y = -playerWidth
             else:
                 self.image = getImages(self.color)[2]
 
             if (self.velocity[0] > 0):
-                self.rect.x += playerWidth
+                change_x = playerWidth
+
+        self.rect = self.image.get_rect()
+        self.rect.x = old_pos[0] + change_x
+        self.rect.y = old_pos[1] + change_y
+
 
 
     def setVelocity(self, velocity):
