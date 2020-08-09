@@ -19,14 +19,15 @@ class Player(pygame.sprite.Sprite):
 
         self.init_velocity = velocity
         self.init_pos = start_pos
+        self.velocity = (velocity, 0)
 
-        self.image = getImages(self.color)[2 - sign(velocity)]
+        # Sets Image (orientation and color of the bike)
+        self.setDesign(self.velocity, self.color)
 
         self.rect = self.image.get_rect()
         self.rect.x = start_pos[0]
         self.rect.y = start_pos[1]
 
-        self.velocity = (velocity, 0)
         self.activeTrail = None
 
         self.newTrail()
@@ -40,27 +41,23 @@ class Player(pygame.sprite.Sprite):
     # --- Setters --- #
 
     def setImage(self, new_vel, color):
+        self.setDesign(new_vel, color)
+
         change_x = change_y = 0
         old_pos = (self.rect.x, self.rect.y)
 
         if (new_vel[0] != 0):
             if (new_vel[0] < 0):
-                self.image = getImages(color)[3]
-                change_x = -playerWidth
-            else:
-                self.image = getImages(color)[1]
+                change_x -= playerWidth
 
             if (self.velocity[1] > 0):
-                change_y = playerWidth
+                change_y += playerWidth
         else:
             if (new_vel[1] < 0):
-                self.image = getImages(color)[0]
-                change_y = -playerWidth
-            else:
-                self.image = getImages(color)[2]
+                change_y -= playerWidth
 
             if (self.velocity[0] > 0):
-                change_x = playerWidth
+                change_x += playerWidth
 
         self.rect = self.image.get_rect()
         self.rect.x = old_pos[0] + change_x
@@ -76,16 +73,7 @@ class Player(pygame.sprite.Sprite):
     def setDesign(self, vel, color):
         self.cur_design = color
 
-        if (vel[0] != 0):
-            if (vel[0] < 0):
-                self.image = getImages(color)[3]
-            else:
-                self.image = getImages(color)[1]
-        else:
-            if (vel[1] < 0):
-                self.image = getImages(color)[0]
-            else:
-                self.image = getImages(color)[2]
+        self.image = getBike(vel, color)
 
     def newTrail(self):
         if self.activeTrail != None:
@@ -108,11 +96,10 @@ class Player(pygame.sprite.Sprite):
 
     def reset(self):
         self.powerup_active = False
-
-        self.image = getImages(self.color)[2 - sign(self.init_velocity)]
-
-
         self.velocity = (self.init_velocity, 0)
+
+        self.image = getBike(self.velocity, self.color)
+
         self.rect = self.image.get_rect()
         self.rect.x = self.init_pos[0]
         self.rect.y = self.init_pos[1]
@@ -136,7 +123,7 @@ class Player(pygame.sprite.Sprite):
     def powerup_time_warning(self):
         # Change Bike color to inform player that the powerup is running out
         # Color changes faster when there is less time
-        if (self.powerup_time < POWERUPTIME * FPS / 1.25):
+        if (self.powerup_time < POWERUPTIME * FPS / 1.75):
             if self.color_change_time == 0:
                 self.color_change_time = self.powerup_time // (POWERUPTIME * 2)
 
@@ -144,7 +131,7 @@ class Player(pygame.sprite.Sprite):
                     self.color_change_time = FPS // 10
 
                 if self.cur_design == self.color:
-                    self.setDesign(self.velocity, "BLUE")
+                    self.setDesign(self.velocity, "POWERUP_" + self.color)
                 else:
                     self.setDesign(self.velocity, self.color)
 
@@ -239,7 +226,7 @@ class Invisible(Player):
             self.invulnerable = True
 
             # Invisiblity Bike Color
-            self.setDesign(self.velocity, "BLUE")
+            self.setDesign(self.velocity, "POWERUP_" + self.color)
 
             # End Trail
             self.activeTrail.endTrail()
@@ -262,12 +249,19 @@ class Invisible(Player):
 
 # --------------------------------------------------------------------------- #
 
+
+# todo glitch with builder death
 class Builder(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "WALL"
         self.powerups_remaining = PLAYERLIVES
 
+        # todo
+        self.cur_design = color
+
         super().__init__(color, start_pos, velocity)
+
+
 
     # --- Powerup Functions --- #
 
@@ -325,7 +319,7 @@ class Jumper(Player):
             self.powerup_active = True
             self.powerup_time = POWERUPTIME * FPS
 
-            self.setDesign(self.velocity, "BLUE")
+            # self.setDesign(self.velocity, "BLUE")
 
         self.jump()
 

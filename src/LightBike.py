@@ -32,7 +32,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Builder("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
+        self.player_one = Jumper("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
         # self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
