@@ -1,6 +1,8 @@
 import pygame
-from Util import *
+
 import Player
+from Util import *
+
 
 class Trail(pygame.sprite.Sprite):
     """ This class represents a simple block the player collects. """
@@ -14,7 +16,7 @@ class Trail(pygame.sprite.Sprite):
 
         self.is_powerup_trail = self.player.powerup_active
 
-        self.centering_factor = player.size / 2 - size / 2
+        self.centering_factor = PLAYERWIDTH / 2 - size / 2
 
         self.image = pygame.Surface([hasValue(self.dir[1]) * size, hasValue(self.dir[0]) * size])
         self.image.fill(self.color)
@@ -30,18 +32,18 @@ class Trail(pygame.sprite.Sprite):
             self.rect.x += self.centering_factor
             self.rect.y += self.centering_factor
         elif (self.dir[0] < 0):
-            self.rect.x += 2 * self.player.size  - self.centering_factor
+            self.rect.x += 2 * PLAYERWIDTH - self.centering_factor
             self.rect.y += self.centering_factor
         elif (self.dir[1] > 0):
             self.rect.x += self.centering_factor
             self.rect.y += self.centering_factor
         elif (self.dir[1] < 0):
             self.rect.x += self.centering_factor
-            self.rect.y += 2 * self.player.size - self.centering_factor
+            self.rect.y += 2 * PLAYERWIDTH - self.centering_factor
 
     def endTrail(self):
-        extendX = hasValue(self.dir[0]) * self.player.size
-        extendY = hasValue(self.dir[1]) * self.player.size
+        extendX = hasValue(self.dir[0]) * PLAYERWIDTH
+        extendY = hasValue(self.dir[1]) * PLAYERWIDTH
 
         old_pos = (self.rect.x, self.rect.y)
 
@@ -112,8 +114,8 @@ class Wall(Trail):
         self.dir = (self.dir[0] * 2, self.dir[1] * 2)
 
     def endTrail(self):
-        extendX = hasValue(self.dir[0]) * self.player.size
-        extendY = hasValue(self.dir[1]) * self.player.size
+        extendX = hasValue(self.dir[0]) * PLAYERWIDTH
+        extendY = hasValue(self.dir[1]) * PLAYERWIDTH
 
         old_pos = (self.rect.x, self.rect.y)
 

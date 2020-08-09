@@ -1,6 +1,3 @@
-import pygame
-import random
-from time import sleep
 from Player import *
 from Trail import *
 from Util import *
@@ -32,7 +29,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Jumper("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
+        self.player_one = Jumper("GREEN", PLAYER_ONE_STARTING_POS, VELOCITY)
         # self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)

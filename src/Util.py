@@ -1,6 +1,7 @@
-from pygame import image
-from pygame import Surface
 from PIL import Image
+from pygame import Surface
+from pygame import image
+
 
 # --- CLASSES --- #
 
@@ -79,8 +80,6 @@ IMAGES = [ONE, TWO, THREE]
 
 for img in IMAGES:
     img.set_colorkey(BLACK)
-
-
 
 # --- FUNCTIONS --- #
 
