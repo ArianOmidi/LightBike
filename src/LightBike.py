@@ -2,13 +2,6 @@ from Player import *
 from Trail import *
 from Util import *
 
-SCREEN_HEIGHT = 700
-SCREEN_WIDTH = 1400
-
-PLAYER_SIZE = 11
-PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 12 , (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
-PLAYER_TWO_STARTING_POS = (SCREEN_WIDTH * 11 / 12 - 2 * PLAYER_SIZE, (SCREEN_HEIGHT - PLAYER_SIZE) / 2)
-VELOCITY = 2
 
 class Game(object):
     """ This class represents an instance of the game. If we need to
@@ -29,7 +22,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Jumper("GREEN", PLAYER_ONE_STARTING_POS, VELOCITY)
+        self.player_one = Booster("GREEN", PLAYER_ONE_STARTING_POS, VELOCITY)
         # self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
@@ -98,10 +91,10 @@ class Game(object):
         self.trail_list.empty()
 
         # Create borders
-        self.trail_list.add(Border((0, 0), (SCREEN_WIDTH, BORDERWIDTH)))
-        self.trail_list.add(Border((0, SCREEN_HEIGHT - BORDERWIDTH), (SCREEN_WIDTH, BORDERWIDTH)))
-        self.trail_list.add(Border((0, 0), (BORDERWIDTH, SCREEN_HEIGHT)))
-        self.trail_list.add(Border((SCREEN_WIDTH - BORDERWIDTH, 0), (BORDERWIDTH, SCREEN_HEIGHT)))
+        self.trail_list.add(Border((0, 0), (SCREEN_WIDTH, BORDER_WIDTH)))
+        self.trail_list.add(Border((0, SCREEN_HEIGHT - BORDER_WIDTH), (SCREEN_WIDTH, BORDER_WIDTH)))
+        self.trail_list.add(Border((0, 0), (BORDER_WIDTH, SCREEN_HEIGHT)))
+        self.trail_list.add(Border((SCREEN_WIDTH - BORDER_WIDTH, 0), (BORDER_WIDTH, SCREEN_HEIGHT)))
 
         for player in self.player_list:
             player.reset()

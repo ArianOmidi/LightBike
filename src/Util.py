@@ -2,7 +2,6 @@ from PIL import Image
 from pygame import Surface
 from pygame import image
 
-
 # --- CLASSES --- #
 
 class SpriteSheet(object):
@@ -35,38 +34,59 @@ class SpriteSheet(object):
         # Return the image
         return image
 
-# --- CONSTANTS -- #
 
+""" --- CONSTANTS --- """
+
+# --- COLORS --- #
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (232, 12, 12)
-YELLOW = (255, 247, 0)
-GREEN = (0, 255, 0)
-TRAILRED = (191, 19, 19)
-INVISIBLEREDTRAIL = (100, 19, 19)
-BOOSTREDTRAIL = (237, 60, 47)
-TRAILBLUE =  (117, 164, 255)
-
-BACKGROUND =  (10, 10, 10)
+BACKGROUND = (10, 10, 10)
 GRIDCOLOR = (0, 25, 0)
 BORDERCOLOR = (0, 50, 0)
 
-trailSize = 3
-playerWidth = 11
-PLAYERWIDTH = 11
-BORDERWIDTH = 5
+# --- TRAIL COLORS --- #
+RED = (232, 12, 12)
+TRAILRED = (191, 19, 19)
+BOOSTREDTRAIL = (237, 60, 47)
+YELLOW = (255, 247, 0)
+GREEN = (0, 255, 0)
+TRAILBLUE =  (117, 164, 255)
+
+# --- DESIGN VARIABLES --- #
+BORDER_WIDTH = 5
 GRIDLINES = 10
-# Boost trail divider
-divider = 3
 
+""" --- PLAYER VARIABLES --- """
 
-PLAYERLIVES = 3
-SPEEDBOOSTFACTOR = 3
-POWERUPTIME = 4
-JUMPTIME = 0.5
+PLAYER_WIDTH = 11
+TRAIL_SIZE = 3
+PLAYER_LIVES = 3
+VELOCITY = 2
+
+# --- BOOSTER --- #
+BOOST_TRAIL_DIVIDER = 3
+SPEED_BOOST_FACTOR = 3
+BOOSTER_POWERUP_TIME = 3
+
+# --- JUMPER --- #
+JUMP_TIME = 0.4
+JUMPER_POWERUP_TIME = 4
+
+# --- INVISIBLE --- #
+INVISIBLE_POWERUP_TIME = 4
+
+# --- BUILDER --- #
+BUILDER_POWERUP_TIME = 1.25
+WALL_SPEED_FACTOR = 2
+
+""" --- GAME VARIABLES --- """
 FPS = 60
+SCREEN_HEIGHT = 750
+SCREEN_WIDTH = 1400
+PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT - PLAYER_WIDTH) / 6)
+PLAYER_TWO_STARTING_POS = (SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT - PLAYER_WIDTH) * 5 / 6)
 
-# --- IMAGES --- #
+""" --- IMAGES --- """
 
 ONE = image.load("../resources/1.png")
 TWO = image.load("../resources/2.png")
@@ -104,14 +124,18 @@ def ceil(x):
         return x
     return tmp + 1
 
+
+def isTrue(bool):
+    if bool:
+        return 1
+    else:
+        return 0
+
 # --- GETTERS --- #
 
 def getTrailColor(color, powerup):
     if (color == "RED"):
-        if (powerup == True):
-            return RED
-        else:
-            return RED
+        return RED
     elif (color == "YELLOW"):
         return YELLOW
     elif (color == "BLUE"):
@@ -119,101 +143,91 @@ def getTrailColor(color, powerup):
     elif (color == "GREEN"):
         return GREEN
 
-def getPowerup(color):
-    if (color == "RED"):
-        return "BOOST"
-
 def getBike(dir, color):
     if (color == "RED"):
         if dir[0] > 0:
-            return BIKES_SHEET.get_image(0, 13 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 13 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return BIKES_SHEET.get_image(0, 12 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 12 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return BIKES_SHEET.get_image(0, 4 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(0, 4 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return BIKES_SHEET.get_image(PLAYERWIDTH, 4 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(PLAYER_WIDTH, 4 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "BLUE"):
         if dir[0] > 0:
-            return BIKES_SHEET.get_image(0, 9 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 9 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return BIKES_SHEET.get_image(0, 8 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 8 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return BIKES_SHEET.get_image(0, 0, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(0, 0, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return BIKES_SHEET.get_image(PLAYERWIDTH, 0, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(PLAYER_WIDTH, 0, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "YELLOW"):
         if dir[0] > 0:
-            return BIKES_SHEET.get_image(0, 15 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 15 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return BIKES_SHEET.get_image(0, 14 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 14 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return BIKES_SHEET.get_image(0, 6 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(0, 6 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return BIKES_SHEET.get_image(PLAYERWIDTH, 6 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(PLAYER_WIDTH, 6 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "GREEN"):
         if dir[0] > 0:
-            return BIKES_SHEET.get_image(0, 11 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 11 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return BIKES_SHEET.get_image(0, 10 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return BIKES_SHEET.get_image(0, 10 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return BIKES_SHEET.get_image(0, 2 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(0, 2 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return BIKES_SHEET.get_image(PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return BIKES_SHEET.get_image(PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     else:
         return getPowerupBike(dir, color)
 
 def getPowerupBike(dir, color):
     if (color == "POWERUP_RED"):
         if dir[0] > 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 13 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 13 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 12 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 12 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return POWERUP_BIKES_SHEET.get_image(0, 4 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(0, 4 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return POWERUP_BIKES_SHEET.get_image(PLAYERWIDTH, 4 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(PLAYER_WIDTH, 4 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "POWERUP_BLUE"):
         if dir[0] > 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 9 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 9 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 8 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 8 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return POWERUP_BIKES_SHEET.get_image(0, 0, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(0, 0, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return POWERUP_BIKES_SHEET.get_image(PLAYERWIDTH, 0, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(PLAYER_WIDTH, 0, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "POWERUP_YELLOW"):
         if dir[0] > 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 15 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 15 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 14 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 14 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return POWERUP_BIKES_SHEET.get_image(0, 6 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(0, 6 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return POWERUP_BIKES_SHEET.get_image(PLAYERWIDTH, 6 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(PLAYER_WIDTH, 6 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
     elif (color == "POWERUP_GREEN"):
         if dir[0] > 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 11 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 11 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         elif dir[0] < 0:
-            return POWERUP_BIKES_SHEET.get_image(0, 10 * PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH)
+            return POWERUP_BIKES_SHEET.get_image(0, 10 * PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH)
         else:
             if dir[1] > 0:
-                return POWERUP_BIKES_SHEET.get_image(0, 2 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
+                return POWERUP_BIKES_SHEET.get_image(0, 2 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
             else:
-                return POWERUP_BIKES_SHEET.get_image(PLAYERWIDTH, 2 * PLAYERWIDTH, PLAYERWIDTH, 2 * PLAYERWIDTH)
-
-def isTrue(bool):
-    if bool:
-        return 1
-    else:
-        return 0
+                return POWERUP_BIKES_SHEET.get_image(PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
 
 def getUnitVector(vector):
     return (sign(vector[0]), sign(vector[1]))

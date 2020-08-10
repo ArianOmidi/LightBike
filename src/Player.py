@@ -1,6 +1,5 @@
 from LightBike import *
 
-
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, color, start_pos, velocity):
@@ -9,7 +8,7 @@ class Player(pygame.sprite.Sprite):
 
         # Variables
         self.color = color
-        self.lives = PLAYERLIVES
+        self.lives = PLAYER_LIVES
 
         # Powerup Variables
         self.powerup_active = False
@@ -48,16 +47,16 @@ class Player(pygame.sprite.Sprite):
 
             if (new_vel[0] != 0):
                 if (new_vel[0] < 0):
-                    change_x -= playerWidth
+                    change_x -= PLAYER_WIDTH
 
                 if (self.velocity[1] > 0):
-                    change_y += playerWidth
+                    change_y += PLAYER_WIDTH
             else:
                 if (new_vel[1] < 0):
-                    change_y -= playerWidth
+                    change_y -= PLAYER_WIDTH
 
                 if (self.velocity[0] > 0):
-                    change_x += playerWidth
+                    change_x += PLAYER_WIDTH
 
             self.rect = self.image.get_rect()
             self.rect.x = old_pos[0] + change_x
@@ -75,7 +74,7 @@ class Player(pygame.sprite.Sprite):
         if self.activeTrail != None:
             self.activeTrail.endTrail()
         self.lastActiveTrail = self.activeTrail
-        self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+        self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y))
 
     # --- Powerup Classes --- #
 
@@ -86,9 +85,9 @@ class Player(pygame.sprite.Sprite):
     def powerup_time_warning(self):
         # Change Bike color to inform player that the powerup is running out
         # Color changes faster when there is less time
-        if (self.powerup_time < POWERUPTIME * FPS / 1.75):
+        if (self.powerup_time < BOOSTER_POWERUP_TIME * FPS / 1.75):
             if self.color_change_time == 0:
-                self.color_change_time = self.powerup_time // (POWERUPTIME * 2)
+                self.color_change_time = self.powerup_time // (BOOSTER_POWERUP_TIME * 2)
 
                 if (self.color_change_time < FPS // 10):
                     self.color_change_time = FPS // 10
@@ -147,7 +146,7 @@ class Player(pygame.sprite.Sprite):
 class Booster(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "BOOST"
-        self.powerups_remaining = PLAYERLIVES
+        self.powerups_remaining = PLAYER_LIVES
         self.speed = abs(velocity)
 
         super().__init__(color, start_pos, velocity)
@@ -163,9 +162,10 @@ class Booster(Player):
         self.lastActiveTrail = self.activeTrail
 
         if self.powerup_active:
-            self.activeTrail = BoostTrail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+            self.activeTrail = BoostTrail(self, getTrailColor(self.color, self.powerup_active),
+                                          (self.rect.x, self.rect.y))
         else:
-            self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+            self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y))
 
 
     # --- Powerup Functions --- #
@@ -173,9 +173,9 @@ class Booster(Player):
     def powerup(self):
         if self.powerup_active == False:
             self.powerup_active = True
-            self.powerup_time = POWERUPTIME * FPS
+            self.powerup_time = BOOSTER_POWERUP_TIME * FPS
 
-            self.speed = abs(int(self.init_velocity * SPEEDBOOSTFACTOR))
+            self.speed = abs(int(self.init_velocity * SPEED_BOOST_FACTOR))
             self.setVelocity(self.velocity)
 
     def check_powerup(self):
@@ -201,7 +201,7 @@ class Booster(Player):
 class Invisible(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "INVISIBLE"
-        self.powerups_remaining = PLAYERLIVES
+        self.powerups_remaining = PLAYER_LIVES
 
         super().__init__(color, start_pos, velocity)
 
@@ -220,7 +220,7 @@ class Invisible(Player):
     def powerup(self):
         if self.powerup_active == False:
             self.powerup_active = True
-            self.powerup_time = POWERUPTIME * FPS
+            self.powerup_time = INVISIBLE_POWERUP_TIME * FPS
             self.invulnerable = True
 
             # Invisiblity Bike Color
@@ -249,7 +249,7 @@ class Invisible(Player):
 class Builder(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "BUILDER"
-        self.powerups_remaining = PLAYERLIVES
+        self.powerups_remaining = PLAYER_LIVES
 
         super().__init__(color, start_pos, velocity)
 
@@ -259,7 +259,7 @@ class Builder(Player):
     def powerup(self):
         if self.powerup_active == False:
             self.powerup_active = True
-            self.powerup_time = POWERUPTIME * FPS
+            self.powerup_time = BUILDER_POWERUP_TIME * FPS
 
             self.newWall()
 
@@ -270,14 +270,21 @@ class Builder(Player):
         else:  # If powerup time is over turn off invisibility and set regular design
             self.powerup_active = False
 
-            self.newTrail()
 
     def newWall(self):
         if self.activeTrail != None:
             self.activeTrail.endTrail()
         self.lastActiveTrail = self.activeTrail
-        self.activeTrail = Wall(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y), trailSize)
+        self.activeTrail = Wall(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y))
         self.wall = self.activeTrail
+
+    # --- Setters --- #
+
+    def newTrail(self):
+        if self.activeTrail != None and not isinstance(self.activeTrail, Wall):
+            self.activeTrail.endTrail()
+        self.lastActiveTrail = self.activeTrail
+        self.activeTrail = Trail(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y))
 
     def update(self):
         """ Find a new position for the player"""
@@ -296,7 +303,7 @@ class Builder(Player):
 class Jumper(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "Jumper"
-        self.powerups_remaining = PLAYERLIVES
+        self.powerups_remaining = PLAYER_LIVES
         self.in_jump = False
 
         super().__init__(color, start_pos, velocity)
@@ -307,7 +314,7 @@ class Jumper(Player):
     def powerup(self):
         if self.powerup_active == False:
             self.powerup_active = True
-            self.powerup_time = POWERUPTIME * FPS
+            self.powerup_time = JUMPER_POWERUP_TIME * FPS
 
         self.jump()
 
@@ -323,7 +330,7 @@ class Jumper(Player):
         if not self.in_jump:
             self.in_jump = True
             self.invulnerable = True
-            self.jump_time_remaining = JUMPTIME * FPS
+            self.jump_time_remaining = JUMP_TIME * FPS
 
             # End Trail
             self.activeTrail.endTrail()
