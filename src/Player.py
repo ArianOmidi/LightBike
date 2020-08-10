@@ -116,6 +116,8 @@ class Player(pygame.sprite.Sprite):
     def reset(self):
         self.powerup_active = False
         self.velocity = (self.init_velocity, 0)
+        self.powerups_remaining = PLAYER_LIVES
+        self.cur_design = self.color
 
         self.image = getBike(self.velocity, self.color)
 
@@ -171,7 +173,8 @@ class Booster(Player):
     # --- Powerup Functions --- #
 
     def powerup(self):
-        if self.powerup_active == False:
+        if self.powerup_active == False and self.powerups_remaining > 0:
+            self.powerups_remaining -= 1
             self.powerup_active = True
             self.powerup_time = BOOSTER_POWERUP_TIME * FPS
 
@@ -218,7 +221,8 @@ class Invisible(Player):
     # --- Powerup Functions --- #
 
     def powerup(self):
-        if self.powerup_active == False:
+        if self.powerup_active == False and self.powerups_remaining > 0:
+            self.powerups_remaining -= 1
             self.powerup_active = True
             self.powerup_time = INVISIBLE_POWERUP_TIME * FPS
             self.invulnerable = True
@@ -257,7 +261,8 @@ class Builder(Player):
     # --- Powerup Functions --- #
 
     def powerup(self):
-        if self.powerup_active == False:
+        if self.powerup_active == False and self.powerups_remaining > 0:
+            self.powerups_remaining -= 1
             self.powerup_active = True
             self.powerup_time = BUILDER_POWERUP_TIME * FPS
 
@@ -312,7 +317,8 @@ class Jumper(Player):
     # --- Powerup Functions --- #
 
     def powerup(self):
-        if self.powerup_active == False:
+        if self.powerup_active == False and self.powerups_remaining > 0:
+            self.powerups_remaining -= 1
             self.powerup_active = True
             self.powerup_time = JUMPER_POWERUP_TIME * FPS
 

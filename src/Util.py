@@ -69,22 +69,24 @@ SPEED_BOOST_FACTOR = 3
 BOOSTER_POWERUP_TIME = 3
 
 # --- JUMPER --- #
-JUMP_TIME = 0.4
+JUMP_TIME = 0.5
 JUMPER_POWERUP_TIME = 4
 
 # --- INVISIBLE --- #
-INVISIBLE_POWERUP_TIME = 4
+INVISIBLE_POWERUP_TIME = 2.5
 
 # --- BUILDER --- #
-BUILDER_POWERUP_TIME = 1.25
+BUILDER_POWERUP_TIME = 1.5
 WALL_SPEED_FACTOR = 2
 
 """ --- GAME VARIABLES --- """
 FPS = 60
 SCREEN_HEIGHT = 750
 SCREEN_WIDTH = 1400
-PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT - PLAYER_WIDTH) / 6)
-PLAYER_TWO_STARTING_POS = (SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT - PLAYER_WIDTH) * 5 / 6)
+BORDER_TOP_OFFSET = 50
+PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) / 5)
+PLAYER_TWO_STARTING_POS = (
+SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) * 4 / 5)
 
 """ --- IMAGES --- """
 
@@ -93,13 +95,25 @@ TWO = image.load("../resources/2.png")
 THREE = image.load("../resources/3.png")
 EXPLOSION = image.load("../resources/explosion.png")
 
+HEART = image.load("../resources/heart.png")
+EMPTY_HEART = image.load("../resources/empty_heart.png")
+
+POWERUP_ICON = image.load("../resources/powerup_icon.png")
+EMPTY_POWERUP_ICON = image.load("../resources/empty_powerup_icon.png")
+
+PLAYER_ICON_IMAGES = [HEART, EMPTY_HEART]
+
 BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet.png")
 POWERUP_BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet_powerup.png")
+ICON_BIKES_SHEET = SpriteSheet("../resources/icon_bikes_sprite_sheet.png")
 
 IMAGES = [ONE, TWO, THREE]
 
 for img in IMAGES:
     img.set_colorkey(BLACK)
+
+for img in PLAYER_ICON_IMAGES:
+    img.set_colorkey(WHITE)
 
 # --- FUNCTIONS --- #
 

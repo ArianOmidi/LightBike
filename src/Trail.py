@@ -113,6 +113,12 @@ class Wall(Trail):
 
         self.dir = (self.dir[0] * WALL_SPEED_FACTOR, self.dir[1] * WALL_SPEED_FACTOR)
 
+    def update(self):
+        if not (self.rect.x + self.dir[0] < BORDER_WIDTH or self.rect.y + self.dir[
+            1] < BORDER_TOP_OFFSET + BORDER_WIDTH or self.image.get_height() + self.rect.y + self.dir[
+                    1] > SCREEN_HEIGHT - BORDER_WIDTH or self.image.get_width() + self.rect.x + self.dir[
+                    0] > SCREEN_WIDTH - BORDER_WIDTH):
+            super().update()
 
 
 class Border(pygame.sprite.Sprite):

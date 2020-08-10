@@ -1,4 +1,5 @@
 from Player import *
+from PlayerIconBar import *
 from Trail import *
 from Util import *
 
@@ -22,11 +23,15 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Booster("GREEN", PLAYER_ONE_STARTING_POS, VELOCITY)
-        # self.player_two = Booster("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
+        self.player_one = Builder("BLUE", PLAYER_ONE_STARTING_POS, VELOCITY)
+        # self.player_two = Jumper("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
         # self.player_list.add(self.player_two)
+
+        self.player_one_icon_bar = PlayerIconBar(self.player_one, True)
+        # self.player_two_icon_bar = PlayerIconBar(self.player_two, False)
+
 
 
     def process_events(self):
@@ -57,7 +62,7 @@ class Game(object):
                 if event.key == pygame.K_SPACE:
                     self.player_one.powerup()
 
-                # Player Two
+                # # Player Two
                 #
                 # if (self.player_two.velocity[0] == 0):
                 #     if event.key == pygame.K_a:
@@ -91,10 +96,10 @@ class Game(object):
         self.trail_list.empty()
 
         # Create borders
-        self.trail_list.add(Border((0, 0), (SCREEN_WIDTH, BORDER_WIDTH)))
+        self.trail_list.add(Border((0, BORDER_TOP_OFFSET), (SCREEN_WIDTH, BORDER_WIDTH)))
         self.trail_list.add(Border((0, SCREEN_HEIGHT - BORDER_WIDTH), (SCREEN_WIDTH, BORDER_WIDTH)))
-        self.trail_list.add(Border((0, 0), (BORDER_WIDTH, SCREEN_HEIGHT)))
-        self.trail_list.add(Border((SCREEN_WIDTH - BORDER_WIDTH, 0), (BORDER_WIDTH, SCREEN_HEIGHT)))
+        self.trail_list.add(Border((0, BORDER_TOP_OFFSET), (BORDER_WIDTH, SCREEN_HEIGHT)))
+        self.trail_list.add(Border((SCREEN_WIDTH - BORDER_WIDTH, BORDER_TOP_OFFSET), (BORDER_WIDTH, SCREEN_HEIGHT)))
 
         for player in self.player_list:
             player.reset()
@@ -114,6 +119,15 @@ class Game(object):
             self.player_list.update()
 
             for player in self.player_list:
+                # Check if player is in bounds
+                if player.rect.x < 0 or player.rect.x > SCREEN_WIDTH or player.rect.y < BORDER_TOP_OFFSET or player.rect.y > SCREEN_HEIGHT:
+                    self.score += 1
+                    print(self.score)
+
+                    player.death()
+                    print(player.lives)
+                    self.round_in_progress = False
+                    break
 
                 if not (self.trail_list.__contains__(player.activeTrail) or player.activeTrail is None) :
                     self.trail_list.add(player.activeTrail)
@@ -133,7 +147,8 @@ class Game(object):
                     self.score += 1
                     print(self.score)
 
-                    # self.game_over = player.death()
+                    player.death()
+                    print(player.lives)
                     self.round_in_progress = False
                     break
                     # You can do something with "block" here.
@@ -155,6 +170,9 @@ class Game(object):
         self.trail_list.draw(screen)
         self.player_list.draw(screen)
 
+        screen.blit(self.player_one_icon_bar.getPlayerIconBar(), (0, 0))
+        # screen.blit(self.player_two_icon_bar.getPlayerIconBar(), (SCREEN_WIDTH // 2, 0))
+
         pygame.display.update()
 
     # FOR TESTING
@@ -171,20 +189,34 @@ class Game(object):
 
         sprite_list.draw(screen)
 
-
     def clear_screen(self, screen):
         screen.fill(BACKGROUND)
 
         for i in range(0, GRIDLINES):
-            pygame.draw.line(screen, GRIDCOLOR, [0, i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2], [SCREEN_WIDTH, i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2], 1)
+            pygame.draw.line(screen, GRIDCOLOR,
+                             [0, i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2 + BORDER_TOP_OFFSET],
+                             [SCREEN_WIDTH,
+                              i * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2 + BORDER_TOP_OFFSET], 1)
         for j in range(0, GRIDLINES):
-            pygame.draw.line(screen, GRIDCOLOR, [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2, 0], [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2, SCREEN_WIDTH], 1)
+            pygame.draw.line(screen, GRIDCOLOR,
+                             [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2, + BORDER_TOP_OFFSET],
+                             [j * SCREEN_WIDTH / GRIDLINES + SCREEN_WIDTH / GRIDLINES / 2,
+                              SCREEN_WIDTH + BORDER_TOP_OFFSET], 1)
 
         for i in range(0, GRIDLINES + 1):
-            pygame.draw.line(screen, BACKGROUND, [0, i * SCREEN_WIDTH / GRIDLINES ], [SCREEN_WIDTH, i * SCREEN_WIDTH / GRIDLINES ], int(SCREEN_WIDTH / GRIDLINES / 6))
+            pygame.draw.line(screen, BACKGROUND, [0, i * SCREEN_WIDTH / GRIDLINES + BORDER_TOP_OFFSET],
+                             [SCREEN_WIDTH, i * SCREEN_WIDTH / GRIDLINES + BORDER_TOP_OFFSET],
+                             int(SCREEN_WIDTH / GRIDLINES / 6))
         for j in range(0, GRIDLINES + 1):
-            pygame.draw.line(screen, BACKGROUND, [j * SCREEN_WIDTH / GRIDLINES , 0],
-                             [j * SCREEN_WIDTH / GRIDLINES , SCREEN_WIDTH], int(SCREEN_WIDTH / GRIDLINES / 6))
+            pygame.draw.line(screen, BACKGROUND, [j * SCREEN_WIDTH / GRIDLINES, BORDER_TOP_OFFSET],
+                             [j * SCREEN_WIDTH / GRIDLINES, SCREEN_WIDTH + BORDER_TOP_OFFSET],
+                             int(SCREEN_WIDTH / GRIDLINES / 6))
+
+        # Offset Fill
+        offset_fill = pygame.Surface((SCREEN_WIDTH, BORDER_TOP_OFFSET))
+        offset_fill.fill(GRIDCOLOR)
+
+        screen.blit(offset_fill, (0, 0))
 
 def main():
     """ Main program function. """
