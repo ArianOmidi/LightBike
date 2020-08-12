@@ -67,20 +67,24 @@ VELOCITY = 2
 BOOST_TRAIL_DIVIDER = 3
 SPEED_BOOST_FACTOR = 3
 BOOSTER_POWERUP_TIME = 3
+BOOSTER_POWERUP_NUM = 3
 
 # --- JUMPER --- #
 JUMP_TIME = 0.5
 JUMPER_POWERUP_TIME = 4
+JUMPER_POWERUP_NUM = 3
 
 # --- INVISIBLE --- #
 INVISIBLE_POWERUP_TIME = 2.5
+INVISIBLE_POWERUP_NUM = 3
 
 # --- BUILDER --- #
 BUILDER_POWERUP_TIME = 1.5
 WALL_SPEED_FACTOR = 2
+BUILDER_POWERUP_NUM = 5
 
 """ --- GAME VARIABLES --- """
-FPS = 60
+FPS = 100
 SCREEN_HEIGHT = 750
 SCREEN_WIDTH = 1400
 BORDER_TOP_OFFSET = 50
@@ -156,6 +160,17 @@ def getTrailColor(color, powerup):
         return TRAILBLUE
     elif (color == "GREEN"):
         return GREEN
+
+
+def getNumOfPowerups(type):
+    if (type == "BOOSTER"):
+        return BOOSTER_POWERUP_NUM
+    elif (type == "BUILDER"):
+        return BUILDER_POWERUP_NUM
+    elif (type == "INVISIBLE"):
+        return INVISIBLE_POWERUP_NUM
+    elif (type == "JUMPER"):
+        return JUMPER_POWERUP_NUM
 
 def getBike(dir, color):
     if (color == "RED"):

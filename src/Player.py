@@ -116,7 +116,7 @@ class Player(pygame.sprite.Sprite):
     def reset(self):
         self.powerup_active = False
         self.velocity = (self.init_velocity, 0)
-        self.powerups_remaining = PLAYER_LIVES
+        self.powerups_remaining = getNumOfPowerups(self.power)
         self.cur_design = self.color
 
         self.image = getBike(self.velocity, self.color)
@@ -147,8 +147,8 @@ class Player(pygame.sprite.Sprite):
 
 class Booster(Player):
     def __init__(self, color, start_pos, velocity):
-        self.power = "BOOST"
-        self.powerups_remaining = PLAYER_LIVES
+        self.power = "BOOSTER"
+        self.powerups_remaining = getNumOfPowerups(self.power)
         self.speed = abs(velocity)
 
         super().__init__(color, start_pos, velocity)
@@ -204,7 +204,7 @@ class Booster(Player):
 class Invisible(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "INVISIBLE"
-        self.powerups_remaining = PLAYER_LIVES
+        self.powerups_remaining = getNumOfPowerups(self.power)
 
         super().__init__(color, start_pos, velocity)
 
@@ -249,11 +249,14 @@ class Invisible(Player):
 
 # --------------------------------------------------------------------------- #
 
-# todo glitch with builder death
+# todo glitch with builder not making wall when 2 buttons pressed
 class Builder(Player):
     def __init__(self, color, start_pos, velocity):
         self.power = "BUILDER"
-        self.powerups_remaining = PLAYER_LIVES
+        self.powerups_remaining = getNumOfPowerups(self.power)
+
+        self.new_wall_made = False
+        self.deleted_trail = None
 
         super().__init__(color, start_pos, velocity)
 
@@ -269,23 +272,25 @@ class Builder(Player):
             self.newWall()
 
     def check_powerup(self):
-        if (self.powerup_time > 0):
+        if (self.powerup_time > 0 and self.wall.update()):
             self.powerup_time -= 1
-            self.wall.update()
         else:  # If powerup time is over turn off invisibility and set regular design
             self.powerup_active = False
 
 
     def newWall(self):
-        if self.activeTrail != None:
-            self.activeTrail.endTrail()
-        self.lastActiveTrail = self.activeTrail
-        self.activeTrail = Wall(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y))
-        self.wall = self.activeTrail
+        self.new_wall_made = True
+        self.deleted_trail = self.activeTrail
+
+        self.wall = Wall(self, getTrailColor(self.color, self.powerup_active), (self.rect.x, self.rect.y),
+                         self.deleted_trail)
+        self.activeTrail = self.wall
 
     # --- Setters --- #
 
     def newTrail(self):
+        self.new_wall_made = False
+
         if self.activeTrail != None and not isinstance(self.activeTrail, Wall):
             self.activeTrail.endTrail()
         self.lastActiveTrail = self.activeTrail
@@ -307,8 +312,8 @@ class Builder(Player):
 
 class Jumper(Player):
     def __init__(self, color, start_pos, velocity):
-        self.power = "Jumper"
-        self.powerups_remaining = PLAYER_LIVES
+        self.power = "JUMPER"
+        self.powerups_remaining = getNumOfPowerups(self.power)
         self.in_jump = False
 
         super().__init__(color, start_pos, velocity)

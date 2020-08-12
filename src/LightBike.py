@@ -23,7 +23,7 @@ class Game(object):
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Builder("BLUE", PLAYER_ONE_STARTING_POS, VELOCITY)
+        self.player_one = Booster("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
         # self.player_two = Jumper("YELLOW", PLAYER_TWO_STARTING_POS, -VELOCITY)
 
         self.player_list.add(self.player_one)
@@ -129,8 +129,13 @@ class Game(object):
                     self.round_in_progress = False
                     break
 
+                # Add any new trails
                 if not (self.trail_list.__contains__(player.activeTrail) or player.activeTrail is None) :
                     self.trail_list.add(player.activeTrail)
+
+                # FOR BUILDER ONLY: Delete old trail from list when wall is made
+                if isinstance(player, Builder) and isinstance(player.activeTrail, Wall):
+                    self.trail_list.remove(player.deleted_trail)
 
                 # If player invulnerable skip over hit detection
                 if player.invulnerable:
@@ -147,9 +152,9 @@ class Game(object):
                     self.score += 1
                     print(self.score)
 
-                    player.death()
+
                     print(player.lives)
-                    self.round_in_progress = False
+                    self.round_in_progress = player.death()
                     break
                     # You can do something with "block" here.
 
@@ -167,6 +172,7 @@ class Game(object):
         elif self.round_in_progress == False:
             self.new_round(screen)
 
+        # self.check_hitboxes(screen)
         self.trail_list.draw(screen)
         self.player_list.draw(screen)
 
@@ -179,9 +185,9 @@ class Game(object):
     def check_hitboxes(self, screen):
         sprite_list = pygame.sprite.Group()
 
-        for trail in self.trail_list:
-            hitbox = Hitbox(trail)
-            sprite_list.add(hitbox)
+        # for trail in self.trail_list:
+        #     hitbox = Hitbox(trail)
+        #     sprite_list.add(hitbox)
 
         for player in self.player_list:
             hitbox = Hitbox(player)

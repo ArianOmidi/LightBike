@@ -1,6 +1,8 @@
-from Player import *
+from Util import *
+from pygame import Surface
+from pygame import Surface
 
-num_of_boosts = 4
+from Util import *
 
 
 class PlayerIconBar(object):
@@ -8,6 +10,7 @@ class PlayerIconBar(object):
     def __init__(self, player, is_p1):
         self.player = player
         self.is_player_one = is_p1
+        self.num_of_powerups = getNumOfPowerups(player.power)
 
     def getPlayerIcon(self):
         player_icon_width = 40
@@ -69,18 +72,18 @@ class PlayerIconBar(object):
         return image
 
     def getPowerupIcons(self):
-        image = Surface((num_of_boosts * 14 + 5 * (num_of_boosts - 1), 14))
+        image = Surface((self.num_of_powerups * 14 + 5 * (self.num_of_powerups - 1), 14))
         image.fill(BOOSTREDTRAIL)
         image.set_colorkey(WHITE)
 
         if self.is_player_one:
-            for i in range(num_of_boosts):
+            for i in range(self.num_of_powerups):
                 if i < self.player.powerups_remaining:
                     image.blit(POWERUP_ICON, (i * (14 + 5), 0))
                 else:
                     image.blit(EMPTY_POWERUP_ICON, (i * (14 + 5), 0))
         else:
-            for i in range(num_of_boosts):
+            for i in range(self.num_of_powerups):
                 if i < self.player.powerups_remaining:
                     image.blit(POWERUP_ICON, (38 - i * (14 + 5), 0))
                 else:
