@@ -1,4 +1,4 @@
-from LightBike import *
+from Trail import *
 
 class Player(pygame.sprite.Sprite):
 

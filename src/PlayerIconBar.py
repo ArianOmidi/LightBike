@@ -1,6 +1,6 @@
-from Util import *
-from pygame import Surface
-from pygame import Surface
+#
+# from pygame import Surface
+# from pygame import Surface
 
 from Util import *
 
@@ -28,7 +28,7 @@ class PlayerIconBar(object):
             if self.player.color == "RED":
                 return ICON_BIKES_SHEET.get_image(10 * player_icon_width, 0, 2 * player_icon_width, player_icon_width)
             elif self.player.color == "BLUE":
-                return ICON_BIKES_SHEET.get_image(2, 0, 2 * player_icon_width, player_icon_width)
+                return ICON_BIKES_SHEET.get_image(2 * player_icon_width, 0, 2 * player_icon_width, player_icon_width)
             elif self.player.color == "YELLOW":
                 return ICON_BIKES_SHEET.get_image(14 * player_icon_width, 0, 2 * player_icon_width, player_icon_width)
             elif self.player.color == "GREEN":
@@ -44,30 +44,33 @@ class PlayerIconBar(object):
             image.blit(self.getLives(), (100, 25))
             image.blit(self.getPowerupIcons(), (100, 5))
         else:
+            lives = self.getLives()
+            powerups = self.getPowerupIcons()
+
             image.blit(self.getPlayerIcon(), (SCREEN_WIDTH // 2 - 90, 5))
-            image.blit(self.getLives(), (SCREEN_WIDTH // 2 - 170, 25))
-            image.blit(self.getPowerupIcons(), (SCREEN_WIDTH // 2 - 152, 5))
+            image.blit(lives, (SCREEN_WIDTH // 2 - 100 - lives.get_width(), 25))
+            image.blit(powerups, (SCREEN_WIDTH // 2 - 100 - powerups.get_width(), 5))
 
         return image
 
     def getLives(self):
-        image = Surface((70, 20))
+        image = Surface((25 * PLAYER_LIVES - 5, 20))
 
         image.fill(BOOSTREDTRAIL)
         image.set_colorkey(WHITE)
 
         if self.is_player_one:
-            for i in range(3):
+            for i in range(PLAYER_LIVES):
                 if i < self.player.lives:
                     image.blit(HEART, (i * (20 + 5), 0))
                 else:
                     image.blit(EMPTY_HEART, (i * (20 + 5), 0))
         else:
-            for i in range(3):
+            for i in range(PLAYER_LIVES):
                 if i < self.player.lives:
-                    image.blit(HEART, (50 - i * (20 + 5), 0))
+                    image.blit(HEART, (image.get_width() - 20 - i * (20 + 5), 0))
                 else:
-                    image.blit(EMPTY_HEART, (50 - i * (20 + 5), 0))
+                    image.blit(EMPTY_HEART, (image.get_width() - 20 - i * (20 + 5), 0))
 
         return image
 
@@ -85,8 +88,8 @@ class PlayerIconBar(object):
         else:
             for i in range(self.num_of_powerups):
                 if i < self.player.powerups_remaining:
-                    image.blit(POWERUP_ICON, (38 - i * (14 + 5), 0))
+                    image.blit(POWERUP_ICON, (image.get_width() - 14 - i * (14 + 5), 0))
                 else:
-                    image.blit(EMPTY_POWERUP_ICON, (38 - i * (14 + 5), 0))
+                    image.blit(EMPTY_POWERUP_ICON, (image.get_width() - 14 - i * (14 + 5), 0))
 
         return image

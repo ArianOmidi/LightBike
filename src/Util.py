@@ -1,6 +1,8 @@
 from PIL import Image
 from pygame import Surface
+from pygame import font
 from pygame import image
+
 
 # --- CLASSES --- #
 
@@ -43,6 +45,8 @@ WHITE = (255, 255, 255)
 BACKGROUND = (10, 10, 10)
 GRIDCOLOR = (0, 25, 0)
 BORDERCOLOR = (0, 50, 0)
+TEXT_COLOR = (230, 230, 230)
+DARK_TEXT_COLOR = (97, 97, 97)
 
 # --- TRAIL COLORS --- #
 RED = (232, 12, 12)
@@ -50,7 +54,7 @@ TRAILRED = (191, 19, 19)
 BOOSTREDTRAIL = (237, 60, 47)
 YELLOW = (255, 247, 0)
 GREEN = (0, 255, 0)
-TRAILBLUE =  (117, 164, 255)
+BLUE = (117, 164, 255)
 
 # --- DESIGN VARIABLES --- #
 BORDER_WIDTH = 5
@@ -61,7 +65,7 @@ GRIDLINES = 10
 PLAYER_WIDTH = 11
 TRAIL_SIZE = 3
 PLAYER_LIVES = 3
-VELOCITY = 2
+VELOCITY = 3
 
 # --- BOOSTER --- #
 BOOST_TRAIL_DIVIDER = 3
@@ -84,19 +88,16 @@ WALL_SPEED_FACTOR = 2
 BUILDER_POWERUP_NUM = 5
 
 """ --- GAME VARIABLES --- """
-FPS = 100
+FPS = 40
 SCREEN_HEIGHT = 750
 SCREEN_WIDTH = 1400
-BORDER_TOP_OFFSET = 50
+BORDER_TOP_OFFSET = 55
 PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) / 5)
 PLAYER_TWO_STARTING_POS = (
 SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) * 4 / 5)
 
 """ --- IMAGES --- """
 
-ONE = image.load("../resources/1.png")
-TWO = image.load("../resources/2.png")
-THREE = image.load("../resources/3.png")
 EXPLOSION = image.load("../resources/explosion.png")
 
 HEART = image.load("../resources/heart.png")
@@ -105,19 +106,76 @@ EMPTY_HEART = image.load("../resources/empty_heart.png")
 POWERUP_ICON = image.load("../resources/powerup_icon.png")
 EMPTY_POWERUP_ICON = image.load("../resources/empty_powerup_icon.png")
 
-PLAYER_ICON_IMAGES = [HEART, EMPTY_HEART]
-
 BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet.png")
 POWERUP_BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet_powerup.png")
 ICON_BIKES_SHEET = SpriteSheet("../resources/icon_bikes_sprite_sheet.png")
 
-IMAGES = [ONE, TWO, THREE]
 
-for img in IMAGES:
-    img.set_colorkey(BLACK)
+# --- INIT FONTS --- # (Reduces lag)
 
-for img in PLAYER_ICON_IMAGES:
-    img.set_colorkey(WHITE)
+def init_fonts(game):
+    global LOGO_ICON, P1_TEXT, P2_TEXT, GAME_OVER_TEXT, P1_WINS_TEXT, P2_WINS_TEXT, CONTINUE_TEXT, DRAW_TEXT
+
+    LOGO_ICON = []
+    P1_TEXT = []
+    P2_TEXT = []
+    GAME_OVER_TEXT = []
+    P1_WINS_TEXT = []
+    P2_WINS_TEXT = []
+    DRAW_TEXT = []
+    CONTINUE_TEXT = []
+
+    fontObj = font.Font("../resources/fonts/retronoid.ttf", 50)
+
+    LOGO_ICON.append(fontObj.render("Light Bike", True, TEXT_COLOR))
+    LOGO_ICON.append(LOGO_ICON[0].get_rect())
+    LOGO_ICON[1].center = (SCREEN_WIDTH // 2, (BORDER_TOP_OFFSET) // 2)
+
+    LOGO_ICON.append(fontObj.render("Light Bike", True, DARK_TEXT_COLOR))
+
+    fontObj = font.Font("../resources/fonts/retronoid.ttf", 40)
+
+    P1_TEXT.append(fontObj.render("P1", True, TEXT_COLOR))
+    P1_TEXT.append(P1_TEXT[0].get_rect())
+    P1_TEXT[1].center = (40, BORDER_TOP_OFFSET // 2)
+
+    P2_TEXT.append(fontObj.render("P2", True, TEXT_COLOR))
+    P2_TEXT.append(P2_TEXT[0].get_rect())
+    P2_TEXT[1].center = (SCREEN_WIDTH - 40, BORDER_TOP_OFFSET // 2)
+
+    fontObj = font.Font("../resources/fonts/retronoid.ttf", 100)
+
+    GAME_OVER_TEXT.append(fontObj.render("Game Over", True, TEXT_COLOR))
+    GAME_OVER_TEXT.append(GAME_OVER_TEXT[0].get_rect())
+    GAME_OVER_TEXT[1].center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+
+    fontObj = font.Font("../resources/fonts/retronoid.ttf", 50)
+
+    P1_WINS_TEXT.append(fontObj.render("Player 1 Wins", True, getTrailColor(game.player_one.color, None)))
+    P1_WINS_TEXT.append(P1_WINS_TEXT[0].get_rect())
+    P1_WINS_TEXT[1].center = (
+    SCREEN_WIDTH // 2, (SCREEN_HEIGHT - P1_WINS_TEXT[0].get_height()) // 2 + GAME_OVER_TEXT[0].get_height())
+
+    if hasattr(game, "player_two"):
+        P2_WINS_TEXT.append(fontObj.render("Player 2 Wins", True, getTrailColor(game.player_two.color, None)))
+        P2_WINS_TEXT.append(P1_WINS_TEXT[1])
+
+    DRAW_TEXT.append(fontObj.render("DRAW", True, TEXT_COLOR))
+    DRAW_TEXT.append(DRAW_TEXT[0].get_rect())
+    DRAW_TEXT[1].center = (
+        SCREEN_WIDTH // 2, (SCREEN_HEIGHT - DRAW_TEXT[0].get_height()) // 2 + GAME_OVER_TEXT[0].get_height())
+
+    fontObj = font.Font("../resources/fonts/retronoid.ttf", 20)
+
+    CONTINUE_TEXT.append(fontObj.render("Press Enter To Exit To Bike Selection", True, TEXT_COLOR))
+    CONTINUE_TEXT.append((SCREEN_WIDTH - 2 * BORDER_WIDTH - CONTINUE_TEXT[0].get_width(),
+                          SCREEN_HEIGHT - BORDER_WIDTH - CONTINUE_TEXT[0].get_height()))
+
+    CONTINUE_TEXT.append(fontObj.render("Press R To Replay", True, TEXT_COLOR))
+    CONTINUE_TEXT.append((SCREEN_WIDTH - 2 * BORDER_WIDTH - CONTINUE_TEXT[2].get_width(),
+                          SCREEN_HEIGHT - BORDER_WIDTH - CONTINUE_TEXT[0].get_height() - CONTINUE_TEXT[2].get_height()))
+
+
 
 # --- FUNCTIONS --- #
 
@@ -142,13 +200,6 @@ def ceil(x):
         return x
     return tmp + 1
 
-
-def isTrue(bool):
-    if bool:
-        return 1
-    else:
-        return 0
-
 # --- GETTERS --- #
 
 def getTrailColor(color, powerup):
@@ -157,7 +208,7 @@ def getTrailColor(color, powerup):
     elif (color == "YELLOW"):
         return YELLOW
     elif (color == "BLUE"):
-        return TRAILBLUE
+        return BLUE
     elif (color == "GREEN"):
         return GREEN
 
@@ -262,5 +313,31 @@ def getUnitVector(vector):
     return (sign(vector[0]), sign(vector[1]))
 
 
+def blit_text(text, font_style, size, color, center, screen):
+    fontObj = font.Font("../resources/fonts/" + font_style + ".ttf", size)
+    textObj = fontObj.render(text, True, color)
+
+    textRect = textObj.get_rect()
+    textRect.center = center
+
+    screen.blit(textObj, textRect)
 
 
+def blit_icon_bar(screen):
+    screen.blit(LOGO_ICON[0], LOGO_ICON[1])
+    screen.blit(P1_TEXT[0], P1_TEXT[1])
+    screen.blit(P2_TEXT[0], P2_TEXT[1])
+
+
+def gameover_text(game, screen):
+    screen.blit(GAME_OVER_TEXT[0], GAME_OVER_TEXT[1])
+    screen.blit(CONTINUE_TEXT[0], CONTINUE_TEXT[1])
+    screen.blit(CONTINUE_TEXT[2], CONTINUE_TEXT[3])
+
+    if game.player_one.lives == 0:
+        if not game.player_two.lives == 0:
+            screen.blit(P2_WINS_TEXT[0], P2_WINS_TEXT[1])
+        else:
+            screen.blit(DRAW_TEXT[0], DRAW_TEXT[1])
+    else:
+        screen.blit(P1_WINS_TEXT[0], P1_WINS_TEXT[1])
