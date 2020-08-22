@@ -201,9 +201,9 @@ class Booster(Player):
 
 # --------------------------------------------------------------------------- #
 
-class Invisible(Player):
+class Ghost(Player):
     def __init__(self, color, start_pos, velocity):
-        self.power = "INVISIBLE"
+        self.power = "GHOST"
         self.powerups_remaining = getNumOfPowerups(self.power)
 
         super().__init__(color, start_pos, velocity)

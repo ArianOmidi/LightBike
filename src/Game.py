@@ -7,18 +7,21 @@ from Util import *
 class Game(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self):
+    def __init__(self, player_color_list):
         self.round_timer = - 3 * FPS
         self.game_over = False
         self.round_in_progress = False
+        self.menu_selected = False
+
+        self.player_colors = player_color_list
 
         # Create sprite lists
         self.trail_list = pygame.sprite.Group()
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = Booster("YELLOW", PLAYER_ONE_STARTING_POS, VELOCITY)
-        self.player_two = Builder("BLUE", PLAYER_TWO_STARTING_POS, -VELOCITY)
+        self.player_one = self.set_player(player_color_list[0], 1)
+        self.player_two = self.set_player(player_color_list[1], 2)
 
         self.player_list.add(self.player_one)
         self.player_list.add(self.player_two)
@@ -31,6 +34,26 @@ class Game(object):
 
         # Add Fonts
         init_fonts(self)
+
+    def set_player(self, color, player_num):
+        if player_num == 1:
+            if color == "RED":
+                return Booster(color, PLAYER_ONE_STARTING_POS, VELOCITY)
+            elif color == "BLUE":
+                return Ghost(color, PLAYER_ONE_STARTING_POS, VELOCITY)
+            elif color == "YELLOW":
+                return Jumper(color, PLAYER_ONE_STARTING_POS, VELOCITY)
+            elif color == "GREEN":
+                return Builder(color, PLAYER_ONE_STARTING_POS, VELOCITY)
+        elif player_num == 2:
+            if color == "RED":
+                return Booster(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
+            elif color == "BLUE":
+                return Ghost(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
+            elif color == "YELLOW":
+                return Jumper(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
+            elif color == "GREEN":
+                return Builder(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
 
     # --- EVENT CONTROLLER --- #
 
@@ -45,39 +68,40 @@ class Game(object):
 
                 if self.game_over:
                     if event.key == pygame.K_r:
-                        self.__init__()
+                        self.__init__(self.player_colors)
+                    if event.key == pygame.K_RETURN:
+                        self.menu_selected = True
 
                 elif self.round_in_progress:
                     # Player One
                     if (self.player_one.velocity[0] == 0):
-                        if event.key == pygame.K_LEFT:
+                        if event.key == pygame.K_a:
                             self.player_one.setVelocity((-VELOCITY, 0))
-                        elif event.key == pygame.K_RIGHT:
+                        elif event.key == pygame.K_d:
                             self.player_one.setVelocity((VELOCITY, 0))
                     else:
-                        if event.key == pygame.K_UP:
+                        if event.key == pygame.K_w:
                             self.player_one.setVelocity((0, -VELOCITY))
-                        elif event.key == pygame.K_DOWN:
+                        elif event.key == pygame.K_s:
                             self.player_one.setVelocity((0, VELOCITY))
 
                     if event.key == pygame.K_SPACE:
                         self.player_one.powerup()
 
-                    # # Player Two
-                    #
-                    # if (self.player_two.velocity[0] == 0):
-                    #     if event.key == pygame.K_a:
-                    #             self.player_two.setVelocity((-VELOCITY, 0))
-                    #     elif event.key == pygame.K_d:
-                    #         self.player_two.setVelocity((VELOCITY, 0))
-                    # else:
-                    #     if event.key == pygame.K_w:
-                    #         self.player_two.setVelocity((0, -VELOCITY))
-                    #     elif event.key == pygame.K_s:
-                    #         self.player_two.setVelocity((0, VELOCITY))
-                    #
-                    # if event.key == pygame.K_SPACE:
-                    #     self.player_two.powerup()
+                    # Player Two
+                    if (self.player_two.velocity[0] == 0):
+                        if event.key == pygame.K_LEFT:
+                            self.player_two.setVelocity((-VELOCITY, 0))
+                        elif event.key == pygame.K_RIGHT:
+                            self.player_two.setVelocity((VELOCITY, 0))
+                    else:
+                        if event.key == pygame.K_UP:
+                            self.player_two.setVelocity((0, -VELOCITY))
+                        elif event.key == pygame.K_DOWN:
+                            self.player_two.setVelocity((0, VELOCITY))
+
+                    if event.key == pygame.K_RETURN:
+                        self.player_two.powerup()
 
         return False
 
@@ -104,13 +128,16 @@ class Game(object):
                     self.trail_list.add(player.activeTrail)
 
                 # Check if player is in bounds
-                if player.rect.x < 0 or player.rect.x > SCREEN_WIDTH or player.rect.y < BORDER_TOP_OFFSET or player.rect.y > SCREEN_HEIGHT:
+                if player.rect.x < BORDER_WIDTH or player.rect.x > SCREEN_WIDTH - BORDER_WIDTH - 2 * PLAYER_WIDTH or player.rect.y < BORDER_TOP_OFFSET + BORDER_WIDTH or player.rect.y > SCREEN_HEIGHT - BORDER_WIDTH - 2 * PLAYER_WIDTH:
                     self.game_over = player.death()
-                    print(player.lives)
 
                     self.round_in_progress = False
                     self.round_timer = - 3 * FPS
-                    break
+
+                    if self.game_over:
+                        break
+                    else:
+                        continue
 
                 # FOR BUILDER ONLY: Delete old trail from list when wall is made
                 if isinstance(player, Builder) and isinstance(player.activeTrail, Wall):
@@ -131,10 +158,13 @@ class Game(object):
                         continue
 
                     self.game_over = player.death()
-                    print(player.lives)
                     self.round_in_progress = False
                     self.round_timer = - 3 * FPS
-                    break
+
+                    if self.game_over:
+                        break
+                    else:
+                        continue
                     # You can do something with "block" here.
 
     # --- ROUND FUNCTIONS --- #

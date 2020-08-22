@@ -95,6 +95,8 @@ BORDER_TOP_OFFSET = 55
 PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) / 5)
 PLAYER_TWO_STARTING_POS = (
 SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) * 4 / 5)
+NUM_OF_PLAYERS = 2
+PLAYER_SELECT_OFFSET = 25
 
 """ --- IMAGES --- """
 
@@ -103,12 +105,17 @@ EXPLOSION = image.load("../resources/explosion.png")
 HEART = image.load("../resources/heart.png")
 EMPTY_HEART = image.load("../resources/empty_heart.png")
 
+INTRO_SCREEN = image.load("../resources/intro_screen.png")
+PLAYER_SELECT_SCREEN = image.load("../resources/empty_menu_screen.png")
+INSTRUCTION_SCREEN = image.load("../resources/instruction_screen.png")
+
 POWERUP_ICON = image.load("../resources/powerup_icon.png")
 EMPTY_POWERUP_ICON = image.load("../resources/empty_powerup_icon.png")
 
 BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet.png")
 POWERUP_BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet_powerup.png")
 ICON_BIKES_SHEET = SpriteSheet("../resources/icon_bikes_sprite_sheet.png")
+PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("../resources/player_select_bike_sheet.png")
 
 
 # --- INIT FONTS --- # (Reduces lag)
@@ -218,7 +225,7 @@ def getNumOfPowerups(type):
         return BOOSTER_POWERUP_NUM
     elif (type == "BUILDER"):
         return BUILDER_POWERUP_NUM
-    elif (type == "INVISIBLE"):
+    elif (type == "GHOST"):
         return INVISIBLE_POWERUP_NUM
     elif (type == "JUMPER"):
         return JUMPER_POWERUP_NUM
@@ -309,8 +316,70 @@ def getPowerupBike(dir, color):
             else:
                 return POWERUP_BIKES_SHEET.get_image(PLAYER_WIDTH, 2 * PLAYER_WIDTH, PLAYER_WIDTH, 2 * PLAYER_WIDTH)
 
+
+def getPlayerSelectionBike(color, player):
+    if (color == "RED"):
+        if player == 1:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(4 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+        elif player == 2:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(5 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+    elif (color == "BLUE"):
+        if player == 1:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(0, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+        elif player == 2:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+    elif (color == "YELLOW"):
+        if player == 1:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(6 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+        elif player == 2:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(7 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+    elif (color == "GREEN"):
+        if player == 1:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(2 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+        elif player == 2:
+            return PLAYER_SELECTION_BIKE_SHEET.get_image(3 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+
 def getUnitVector(vector):
     return (sign(vector[0]), sign(vector[1]))
+
+
+def getColorIndex(color):
+    if (color == "RED"):
+        return 0
+    elif (color == "BLUE"):
+        return 1
+    elif (color == "YELLOW"):
+        return 2
+    elif (color == "GREEN"):
+        return 3
+    else:
+        return -1
+
+
+def getColor(index):
+    if (index == 0):
+        return "RED"
+    elif (index == 1):
+        return "BLUE"
+    elif (index == 2):
+        return "YELLOW"
+    elif (index == 3):
+        return "GREEN"
+    else:
+        return ""
+
+
+def getName(index):
+    if (index == 0):
+        return "BOOSTER"
+    elif (index == 1):
+        return "GHOST"
+    elif (index == 2):
+        return "JUMPER"
+    elif (index == 3):
+        return "BUILDER"
+    else:
+        return ""
 
 
 def blit_text(text, font_style, size, color, center, screen):
@@ -327,6 +396,7 @@ def blit_icon_bar(screen):
     screen.blit(LOGO_ICON[0], LOGO_ICON[1])
     screen.blit(P1_TEXT[0], P1_TEXT[1])
     screen.blit(P2_TEXT[0], P2_TEXT[1])
+
 
 
 def gameover_text(game, screen):
