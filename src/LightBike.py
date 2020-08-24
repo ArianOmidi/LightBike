@@ -39,7 +39,7 @@ class LightBike(object):
                 self.menu.display_frame(self.screen)
             else:
                 if self.game == None:
-                    self.game = Game(self.menu.player_color_list)
+                    self.game = Game(self.menu.player_attributes)
 
                 # Process events (keystrokes, mouse clicks, etc)
                 self.done = self.game.process_events()

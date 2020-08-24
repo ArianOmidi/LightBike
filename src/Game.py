@@ -7,21 +7,21 @@ from Util import *
 class Game(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self, player_color_list):
+    def __init__(self, player_attributes):
         self.round_timer = - 3 * FPS
         self.game_over = False
         self.round_in_progress = False
         self.menu_selected = False
 
-        self.player_colors = player_color_list
+        self.player_attributes = player_attributes
 
         # Create sprite lists
         self.trail_list = pygame.sprite.Group()
         self.player_list = pygame.sprite.Group()
 
         # Create the players
-        self.player_one = self.set_player(player_color_list[0], 1)
-        self.player_two = self.set_player(player_color_list[1], 2)
+        self.player_one = self.set_player(player_attributes[0], 1)
+        self.player_two = self.set_player(player_attributes[1], 2)
 
         self.player_list.add(self.player_one)
         self.player_list.add(self.player_two)
@@ -35,25 +35,24 @@ class Game(object):
         # Add Fonts
         init_fonts(self)
 
-    def set_player(self, color, player_num):
+    def set_player(self, player_attributes, player_num):
         if player_num == 1:
-            if color == "RED":
-                return Booster(color, PLAYER_ONE_STARTING_POS, VELOCITY)
-            elif color == "BLUE":
-                return Ghost(color, PLAYER_ONE_STARTING_POS, VELOCITY)
-            elif color == "YELLOW":
-                return Jumper(color, PLAYER_ONE_STARTING_POS, VELOCITY)
-            elif color == "GREEN":
-                return Builder(color, PLAYER_ONE_STARTING_POS, VELOCITY)
+            starting_pos = PLAYER_ONE_STARTING_POS
+            starting_vel = VELOCITY
         elif player_num == 2:
-            if color == "RED":
-                return Booster(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
-            elif color == "BLUE":
-                return Ghost(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
-            elif color == "YELLOW":
-                return Jumper(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
-            elif color == "GREEN":
-                return Builder(color, PLAYER_TWO_STARTING_POS, -VELOCITY)
+            starting_pos = PLAYER_TWO_STARTING_POS
+            starting_vel = -VELOCITY
+        else:
+            return None
+
+        if player_attributes[1] == "BOOST":
+            return Booster(player_attributes[0], starting_pos, starting_vel)
+        elif player_attributes[1] == "GHOST":
+            return Ghost(player_attributes[0], starting_pos, starting_vel)
+        elif player_attributes[1] == "JUMP":
+            return Jumper(player_attributes[0], starting_pos, starting_vel)
+        elif player_attributes[1] == "WALL":
+            return Builder(player_attributes[0], starting_pos, starting_vel)
 
     # --- EVENT CONTROLLER --- #
 
@@ -68,7 +67,7 @@ class Game(object):
 
                 if self.game_over:
                     if event.key == pygame.K_r:
-                        self.__init__(self.player_colors)
+                        self.__init__(self.player_attributes)
                     if event.key == pygame.K_RETURN:
                         self.menu_selected = True
 
@@ -198,11 +197,11 @@ class Game(object):
         if self.game_over:
             gameover_text(self, screen)
         elif (self.round_timer < -2 * FPS):
-            blit_text("1", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
+            blit_text("3", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
         elif (self.round_timer < -FPS):
             blit_text("2", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
         elif (self.round_timer < 0):
-            blit_text("3", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
+            blit_text("1", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
         elif (self.round_timer < FPS):
             blit_text("GO", "retronoid", 200, TEXT_COLOR, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), screen)
 

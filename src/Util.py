@@ -78,7 +78,7 @@ JUMP_TIME = 0.5
 JUMPER_POWERUP_TIME = 4
 JUMPER_POWERUP_NUM = 3
 
-# --- INVISIBLE --- #
+# --- GHOST --- #
 INVISIBLE_POWERUP_TIME = 2.5
 INVISIBLE_POWERUP_NUM = 3
 
@@ -96,26 +96,30 @@ PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT + BORDER_TOP_OF
 PLAYER_TWO_STARTING_POS = (
 SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) * 4 / 5)
 NUM_OF_PLAYERS = 2
+
 PLAYER_SELECT_OFFSET = 25
+PLAYER_SELECT_BORDER = 10
+
+POWERUP_SELECTION_ICON_SIZE = 150
 
 """ --- IMAGES --- """
 
-EXPLOSION = image.load("../resources/explosion.png")
+EXPLOSION = image.load("../resources/images/explosions/explosion.png")
 
-HEART = image.load("../resources/heart.png")
-EMPTY_HEART = image.load("../resources/empty_heart.png")
+HEART = image.load("../resources/images/icons/heart.png")
+EMPTY_HEART = image.load("../resources/images/icons/empty_heart.png")
+POWERUP_ICON = image.load("../resources/images/icons/powerup_icon.png")
+EMPTY_POWERUP_ICON = image.load("../resources/images/icons/empty_powerup_icon.png")
 
-INTRO_SCREEN = image.load("../resources/intro_screen.png")
-PLAYER_SELECT_SCREEN = image.load("../resources/empty_menu_screen.png")
-INSTRUCTION_SCREEN = image.load("../resources/instruction_screen.png")
+BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/bikes_sprite_sheet.png")
+POWERUP_BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/bikes_sprite_sheet_powerup.png")
+ICON_BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/icon_bikes_sprite_sheet.png")
+PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("../resources/images/sprite_sheets/player_select_bike_sheet.png")
+POWERUP_SELECTION_SHEET = SpriteSheet("../resources/images/sprite_sheets/powerup_sheet.png")
 
-POWERUP_ICON = image.load("../resources/powerup_icon.png")
-EMPTY_POWERUP_ICON = image.load("../resources/empty_powerup_icon.png")
-
-BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet.png")
-POWERUP_BIKES_SHEET = SpriteSheet("../resources/bikes_sprite_sheet_powerup.png")
-ICON_BIKES_SHEET = SpriteSheet("../resources/icon_bikes_sprite_sheet.png")
-PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("../resources/player_select_bike_sheet.png")
+INTRO_SCREEN = image.load("../resources/images/backgrounds/intro_screen.png")
+PLAYER_SELECT_SCREEN = image.load("../resources/images/backgrounds/empty_menu_screen.png")
+INSTRUCTION_SCREEN = image.load("../resources/images/backgrounds/instruction_screen.png")
 
 
 # --- INIT FONTS --- # (Reduces lag)
@@ -339,6 +343,19 @@ def getPlayerSelectionBike(color, player):
         elif player == 2:
             return PLAYER_SELECTION_BIKE_SHEET.get_image(3 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
 
+
+def getPowerupSelectionIcon(powerup):
+    if powerup == "BOOST":
+        return POWERUP_SELECTION_SHEET.get_image(0, 0, 150, 150)
+    elif powerup == "GHOST":
+        return POWERUP_SELECTION_SHEET.get_image(1 * 150, 0, 150, 150)
+    elif powerup == "JUMP":
+        return POWERUP_SELECTION_SHEET.get_image(2 * 150, 0, 150, 150)
+    elif powerup == "WALL":
+        return POWERUP_SELECTION_SHEET.get_image(3 * 150, 0, 150, 150)
+    else:
+        return PLAYER_SELECTION_BIKE_SHEET.get_image(3 * 20 * PLAYER_WIDTH, 0, 20 * PLAYER_WIDTH, 10 * PLAYER_WIDTH)
+
 def getUnitVector(vector):
     return (sign(vector[0]), sign(vector[1]))
 
@@ -369,17 +386,44 @@ def getColor(index):
         return ""
 
 
-def getName(index):
+def getPowerupIndex(powerup):
+    if (powerup == "WALL"):
+        return 0
+    elif (powerup == "GHOST"):
+        return 1
+    elif (powerup == "BOOST"):
+        return 2
+    elif (powerup == "JUMP"):
+        return 3
+    else:
+        return -1
+
+
+def getPowerup(index):
     if (index == 0):
-        return "BOOSTER"
+        return "WALL"
     elif (index == 1):
         return "GHOST"
     elif (index == 2):
-        return "JUMPER"
+        return "BOOST"
     elif (index == 3):
-        return "BUILDER"
+        return "JUMP"
     else:
         return ""
+
+
+def getPowerupColor(index):
+    if (index == 0):
+        return (234, 203, 78)
+    elif (index == 1):
+        return (179, 188, 214)
+    elif (index == 2):
+        return (116, 156, 71)
+    elif (index == 3):
+        return (155, 56, 45)
+    else:
+        return WHITE
+
 
 
 def blit_text(text, font_style, size, color, center, screen):
