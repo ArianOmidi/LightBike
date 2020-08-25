@@ -7,7 +7,7 @@ from Util import *
 class Game(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self, player_attributes):
+    def __init__(self, sound_player, player_attributes):
         self.round_timer = - 3 * FPS
         self.game_over = False
         self.round_in_progress = False
@@ -34,6 +34,10 @@ class Game(object):
 
         # Add Fonts
         init_fonts(self)
+
+        # Sound Player
+        self.sound_player = sound_player
+        self.sound_player.play_theme_song()
 
     def set_player(self, player_attributes, player_num):
         if player_num == 1:
@@ -67,7 +71,7 @@ class Game(object):
 
                 if self.game_over:
                     if event.key == pygame.K_r:
-                        self.__init__(self.player_attributes)
+                        self.__init__(self.sound_player, self.player_attributes)
                     if event.key == pygame.K_RETURN:
                         self.menu_selected = True
 
@@ -114,7 +118,9 @@ class Game(object):
 
         self.round_timer += 1
 
-        if self.round_timer == 0:
+        if self.round_timer == - FPS:
+            self.sound_player.play_round_start()
+        elif self.round_timer == 0:
             self.new_round()
 
         if self.round_in_progress:
@@ -134,8 +140,10 @@ class Game(object):
                     self.round_timer = - 3 * FPS
 
                     if self.game_over:
+                        self.sound_player.play_game_over()
                         break
                     else:
+                        self.sound_player.play_explosion()
                         continue
 
                 # FOR BUILDER ONLY: Delete old trail from list when wall is made
@@ -161,8 +169,10 @@ class Game(object):
                     self.round_timer = - 3 * FPS
 
                     if self.game_over:
+                        self.sound_player.play_game_over()
                         break
                     else:
+                        self.sound_player.play_explosion()
                         continue
                     # You can do something with "block" here.
 

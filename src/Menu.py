@@ -4,7 +4,7 @@ from Game import *
 class Menu(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self):
+    def __init__(self, sound_player):
         self.intro_screen = True
         self.instructions = False
         self.player_select = False
@@ -18,6 +18,11 @@ class Menu(object):
         self.title_font = font.Font("../resources/fonts/retronoid.ttf", 65)
         self.header_font = font.Font("../resources/fonts/retronoid.ttf", 55)
         self.body_font = font.Font("../resources/fonts/retronoid.ttf", 40)
+
+        self.sound_player = sound_player
+        self.sound_player.play_theme_song()
+
+        self.prev_mouse_index = -1
 
 
     # --- EVENT CONTROLLER --- #
@@ -62,11 +67,13 @@ class Menu(object):
 
                     if mouse_on_color != None and len(self.player_color_list) < NUM_OF_PLAYERS:
                         self.player_color_list.append(mouse_on_color)
+                        self.sound_player.play_menu_action()
                 elif self.powerup_select:
                     mouse_on_powerup = self.mouse_on_powerup()
 
                     if mouse_on_powerup != None and len(self.player_powerup_list) < NUM_OF_PLAYERS:
                         self.player_powerup_list.append(mouse_on_powerup)
+                        self.sound_player.play_menu_action()
 
 
         return False
@@ -125,9 +132,14 @@ class Menu(object):
             image.fill(DARK_TEXT_COLOR)
 
             if mouse_on_color != None:
+                if self.prev_mouse_index != getColorIndex(mouse_on_color):
+                    self.sound_player.play_menu_highlight()
+
                 screen.blit(image, (self.bike_pos[getColorIndex(mouse_on_color)][0] - PLAYER_SELECT_OFFSET,
                                     self.bike_pos[getColorIndex(mouse_on_color)][
                                         1] - PLAYER_SELECT_OFFSET))
+
+            self.prev_mouse_index = getColorIndex(mouse_on_color)
 
             for i in range(4):
                 if not self.player_color_list.__contains__(getColor(i)):
@@ -187,18 +199,23 @@ class Menu(object):
             image.fill(DARK_TEXT_COLOR)
 
             if mouse_on_powerup != None:
+                if self.prev_mouse_index != getPowerupIndex(mouse_on_powerup):
+                    self.sound_player.play_menu_highlight()
+
                 screen.blit(image, (self.powerup_pos[getPowerupIndex(mouse_on_powerup)][0] - PLAYER_SELECT_OFFSET,
                                     self.powerup_pos[getPowerupIndex(mouse_on_powerup)][
                                         1] - PLAYER_SELECT_OFFSET))
 
+            self.prev_mouse_index = getPowerupIndex(mouse_on_powerup)
+
             for i in range(4):
-                if not self.player_powerup_list.__contains__(getPowerup(i)):
-                    screen.blit(getPowerupSelectionIcon(getPowerup(i)), self.powerup_pos[i])
-                elif self.player_powerup_list[0] == getPowerup(i):
-                    screen.blit(getPowerupSelectionIcon(getPowerup(i)),
+                screen.blit(getPowerupSelectionIcon(getPowerup(i)), self.powerup_pos[i])
+
+                if len(self.player_powerup_list) >= 1:
+                    screen.blit(getPowerupSelectionIcon(self.player_powerup_list[0]),
                                 (80 + 20 * PLAYER_WIDTH + 40, self.powerup_pos[0][1]))
-                elif self.player_powerup_list[1] == getPowerup(i):
-                    screen.blit(getPowerupSelectionIcon(getPowerup(i)),
+                if len(self.player_powerup_list) >= 2:
+                    screen.blit(getPowerupSelectionIcon(self.player_powerup_list[1]),
                                 (80 + 20 * PLAYER_WIDTH + 40, self.powerup_pos[2][1]))
 
 
@@ -235,25 +252,25 @@ class Menu(object):
         # mouse position
         mouse = pygame.mouse.get_pos()
 
-        if not self.player_powerup_list.__contains__(getPowerup(0)) and self.powerup_pos[0][0] - PLAYER_SELECT_OFFSET <= \
+        if self.powerup_pos[0][0] - PLAYER_SELECT_OFFSET <= \
                 mouse[0] <= \
                 self.powerup_pos[0][0] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET and self.powerup_pos[0][
             1] - PLAYER_SELECT_OFFSET <= mouse[1] <= self.powerup_pos[0][
             1] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET:
             return getPowerup(0)
-        elif not self.player_powerup_list.__contains__(getPowerup(1)) and self.powerup_pos[1][
+        elif self.powerup_pos[1][
             0] - PLAYER_SELECT_OFFSET <= mouse[0] <= \
                 self.powerup_pos[1][0] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET and self.powerup_pos[1][
             1] - PLAYER_SELECT_OFFSET <= mouse[1] <= self.powerup_pos[1][
             1] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET:
             return getPowerup(1)
-        elif not self.player_powerup_list.__contains__(getPowerup(2)) and self.powerup_pos[2][
+        elif self.powerup_pos[2][
             0] - PLAYER_SELECT_OFFSET <= mouse[0] <= \
                 self.powerup_pos[2][0] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET and self.powerup_pos[2][
             1] - PLAYER_SELECT_OFFSET <= mouse[1] <= self.powerup_pos[2][
             1] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET:
             return getPowerup(2)
-        elif not self.player_powerup_list.__contains__(getPowerup(3)) and self.powerup_pos[3][
+        elif self.powerup_pos[3][
             0] - PLAYER_SELECT_OFFSET <= mouse[0] <= \
                 self.powerup_pos[3][0] + POWERUP_SELECTION_ICON_SIZE + PLAYER_SELECT_OFFSET and self.powerup_pos[3][
             1] - PLAYER_SELECT_OFFSET <= mouse[1] <= self.powerup_pos[3][

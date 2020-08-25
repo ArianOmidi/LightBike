@@ -11,8 +11,10 @@ class Player(pygame.sprite.Sprite):
         self.lives = PLAYER_LIVES
 
         # Powerup Variables
+        self.power = "None"
         self.powerup_active = False
         self.invulnerable = False
+        self.powerup_time = 0
         self.color_change_time = 0
 
         # Set Velocity and Position
@@ -180,6 +182,8 @@ class Booster(Player):
 
             self.speed = abs(int(self.init_velocity * SPEED_BOOST_FACTOR))
             self.setVelocity(self.velocity)
+
+            SOUND_PLAYER.play_boost()
 
     def check_powerup(self):
         if (self.powerup_time > 0):

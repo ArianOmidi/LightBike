@@ -19,10 +19,13 @@ class LightBike(object):
         self.done = False
         self.clock = pygame.time.Clock()
 
-        self.game = None
-        self.menu = Menu()
+        self.sound_player = SOUND_PLAYER
 
-        self.mode = self.menu
+        self.game = None
+        self.menu = Menu(self.sound_player)
+
+
+
 
     def run(self):
         # Main game loop
@@ -32,14 +35,11 @@ class LightBike(object):
                 # Process events (keystrokes, mouse clicks, etc)
                 self.done = self.menu.process_events()
 
-                # # Update object positions, check for collisions
-                # game.run_logic()
-
                 # Draw the current frame
                 self.menu.display_frame(self.screen)
             else:
                 if self.game == None:
-                    self.game = Game(self.menu.player_attributes)
+                    self.game = Game(self.sound_player, self.menu.player_attributes)
 
                 # Process events (keystrokes, mouse clicks, etc)
                 self.done = self.game.process_events()
@@ -48,6 +48,7 @@ class LightBike(object):
                 if self.game.menu_selected:
                     self.game = None
                     self.menu.return_to_player_selection()
+                    self.sound_player.play_theme_song()
                     continue
 
                 # # Update object positions, check for collisions
@@ -63,82 +64,6 @@ class LightBike(object):
 
         # Close window and exit
         pygame.quit()
-
-
-# def main():
-#     """ Main program function. """
-#     # Initialize Pygame and set up the window
-#     pygame.init()
-#
-#     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
-#     screen = pygame.display.set_mode(size)
-#
-#     pygame.display.set_caption("Light Bike")
-#     pygame.mouse.set_visible(True)
-#
-#     # Create our objects and set the data
-#     done = False
-#     clock = pygame.time.Clock()
-#
-#     # Create an instance of the Game class
-#     menu = Menu()
-#
-#     # Main game loop
-#     while not done:
-#         # Process events (keystrokes, mouse clicks, etc)
-#         done = menu.process_events()
-#
-#         # # Update object positions, check for collisions
-#         # game.run_logic()
-#
-#         # Draw the current frame
-#         menu.display_frame(screen)
-#
-#         # Pause for the next frame
-#         clock.tick(FPS)
-#
-#         # print(clock.get_fps())
-#
-#     # Close window and exit
-#     pygame.quit()
-
-
-# def main():
-#     """ Main program function. """
-#     # Initialize Pygame and set up the window
-#     pygame.init()
-#
-#     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
-#     screen = pygame.display.set_mode(size)
-#
-#     pygame.display.set_caption("Light Bike")
-#     pygame.mouse.set_visible(True)
-#
-#     # Create our objects and set the data
-#     done = False
-#     clock = pygame.time.Clock()
-#
-#     # Create an instance of the Game class
-#     game = Game()
-#
-#     # Main game loop
-#     while not done:
-#         # Process events (keystrokes, mouse clicks, etc)
-#         done = game.process_events()
-#
-#         # Update object positions, check for collisions
-#         game.run_logic()
-#
-#         # Draw the current frame
-#         game.display_frame(screen)
-#
-#         # Pause for the next frame
-#         clock.tick(FPS)
-#
-#         # print(clock.get_fps())
-#
-#     # Close window and exit
-#     pygame.quit()
 
 
 # Call the main function, start up the game

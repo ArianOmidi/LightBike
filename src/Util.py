@@ -2,7 +2,11 @@ from PIL import Image
 from pygame import Surface
 from pygame import font
 from pygame import image
+from pygame import init
 
+from SoundPlayer import SoundPlayer
+
+init()
 
 # --- CLASSES --- #
 
@@ -64,13 +68,13 @@ GRIDLINES = 10
 
 PLAYER_WIDTH = 11
 TRAIL_SIZE = 3
-PLAYER_LIVES = 3
+PLAYER_LIVES = 2
 VELOCITY = 3
 
 # --- BOOSTER --- #
 BOOST_TRAIL_DIVIDER = 3
 SPEED_BOOST_FACTOR = 3
-BOOSTER_POWERUP_TIME = 3
+BOOSTER_POWERUP_TIME = 3.5
 BOOSTER_POWERUP_NUM = 3
 
 # --- JUMPER --- #
@@ -120,6 +124,8 @@ POWERUP_SELECTION_SHEET = SpriteSheet("../resources/images/sprite_sheets/powerup
 INTRO_SCREEN = image.load("../resources/images/backgrounds/intro_screen.png")
 PLAYER_SELECT_SCREEN = image.load("../resources/images/backgrounds/empty_menu_screen.png")
 INSTRUCTION_SCREEN = image.load("../resources/images/backgrounds/instruction_screen.png")
+
+SOUND_PLAYER = SoundPlayer()
 
 
 # --- INIT FONTS --- # (Reduces lag)
@@ -185,7 +191,6 @@ def init_fonts(game):
     CONTINUE_TEXT.append(fontObj.render("Press R To Replay", True, TEXT_COLOR))
     CONTINUE_TEXT.append((SCREEN_WIDTH - 2 * BORDER_WIDTH - CONTINUE_TEXT[2].get_width(),
                           SCREEN_HEIGHT - BORDER_WIDTH - CONTINUE_TEXT[0].get_height() - CONTINUE_TEXT[2].get_height()))
-
 
 
 # --- FUNCTIONS --- #
