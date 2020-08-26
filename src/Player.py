@@ -1,4 +1,9 @@
-from Trail import *
+from Trail import Trail
+from Trail import BoostTrail
+from Trail import Wall
+from Util import *
+import pygame
+
 
 class Player(pygame.sprite.Sprite):
 
@@ -149,11 +154,11 @@ class Player(pygame.sprite.Sprite):
 
 class Booster(Player):
     def __init__(self, color, start_pos, velocity):
+        super().__init__(color, start_pos, velocity)
+
         self.power = "BOOSTER"
         self.powerups_remaining = getNumOfPowerups(self.power)
         self.speed = abs(velocity)
-
-        super().__init__(color, start_pos, velocity)
 
     # --- Setters --- #
 
@@ -207,10 +212,11 @@ class Booster(Player):
 
 class Ghost(Player):
     def __init__(self, color, start_pos, velocity):
+        super().__init__(color, start_pos, velocity)
+
         self.power = "GHOST"
         self.powerups_remaining = getNumOfPowerups(self.power)
 
-        super().__init__(color, start_pos, velocity)
 
     # --- Setters --- #
 
@@ -239,6 +245,9 @@ class Ghost(Player):
             self.lastActiveTrail = self.activeTrail
             self.activeTrail = None
 
+            # Play Sound
+            SOUND_PLAYER.play_ghost()
+
     def check_powerup(self):
         if (self.powerup_time > 0):
             self.powerup_time_warning()
@@ -256,13 +265,13 @@ class Ghost(Player):
 # todo glitch with builder not making wall when 2 buttons pressed
 class Builder(Player):
     def __init__(self, color, start_pos, velocity):
+        super().__init__(color, start_pos, velocity)
+
         self.power = "BUILDER"
         self.powerups_remaining = getNumOfPowerups(self.power)
 
         self.new_wall_made = False
         self.deleted_trail = None
-
-        super().__init__(color, start_pos, velocity)
 
 
     # --- Powerup Functions --- #
@@ -274,6 +283,9 @@ class Builder(Player):
             self.powerup_time = BUILDER_POWERUP_TIME * FPS
 
             self.newWall()
+
+            # Play Sound
+            SOUND_PLAYER.play_wall()
 
     def check_powerup(self):
         if (self.powerup_time > 0 and self.wall.update()):
@@ -316,11 +328,11 @@ class Builder(Player):
 
 class Jumper(Player):
     def __init__(self, color, start_pos, velocity):
+        super().__init__(color, start_pos, velocity)
+
         self.power = "JUMPER"
         self.powerups_remaining = getNumOfPowerups(self.power)
         self.in_jump = False
-
-        super().__init__(color, start_pos, velocity)
 
 
     # --- Powerup Functions --- #
@@ -351,6 +363,8 @@ class Jumper(Player):
             self.activeTrail.endTrail()
             self.lastActiveTrail = self.activeTrail
             self.activeTrail = None
+
+            SOUND_PLAYER.play_jump()
 
     def check_jump(self):
         if (self.jump_time_remaining > 0):

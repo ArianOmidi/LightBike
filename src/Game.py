@@ -1,13 +1,22 @@
-from Player import *
-from PlayerIconBar import *
-from Trail import *
 from Util import *
+
+from Player import Booster
+from Player import Ghost
+from Player import Builder
+from Player import Jumper
+
+from Trail import Wall
+from Border import Border
+from Hitbox import Hitbox
+from PlayerIconBar import PlayerIconBar
+
+import pygame
 
 
 class Game(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self, sound_player, player_attributes):
+    def __init__(self, player_attributes):
         self.round_timer = - 3 * FPS
         self.game_over = False
         self.round_in_progress = False
@@ -36,8 +45,7 @@ class Game(object):
         init_fonts(self)
 
         # Sound Player
-        self.sound_player = sound_player
-        self.sound_player.play_theme_song()
+        SOUND_PLAYER.play_theme_song()
 
     def set_player(self, player_attributes, player_num):
         if player_num == 1:
@@ -71,7 +79,7 @@ class Game(object):
 
                 if self.game_over:
                     if event.key == pygame.K_r:
-                        self.__init__(self.sound_player, self.player_attributes)
+                        self.__init__(self.player_attributes)
                     if event.key == pygame.K_RETURN:
                         self.menu_selected = True
 
@@ -118,10 +126,11 @@ class Game(object):
 
         self.round_timer += 1
 
-        if self.round_timer == - FPS:
-            self.sound_player.play_round_start()
+        if self.round_timer == int(- 1.45 * FPS):
+            SOUND_PLAYER.play_round_reset()
         elif self.round_timer == 0:
             self.new_round()
+            SOUND_PLAYER.play_round_start()
 
         if self.round_in_progress:
             # Move the player
@@ -140,10 +149,10 @@ class Game(object):
                     self.round_timer = - 3 * FPS
 
                     if self.game_over:
-                        self.sound_player.play_game_over()
+                        SOUND_PLAYER.play_game_over()
                         break
                     else:
-                        self.sound_player.play_explosion()
+                        SOUND_PLAYER.play_crash()
                         continue
 
                 # FOR BUILDER ONLY: Delete old trail from list when wall is made
@@ -169,10 +178,10 @@ class Game(object):
                     self.round_timer = - 3 * FPS
 
                     if self.game_over:
-                        self.sound_player.play_game_over()
+                        SOUND_PLAYER.play_game_over()
                         break
                     else:
-                        self.sound_player.play_explosion()
+                        SOUND_PLAYER.play_crash()
                         continue
                     # You can do something with "block" here.
 

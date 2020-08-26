@@ -1,7 +1,5 @@
-import pygame
-
-import Player
 from Util import *
+import pygame
 
 
 class Trail(pygame.sprite.Sprite):
@@ -144,40 +142,5 @@ class Wall(Trail):
     def endTrail(self):
         return None
 
-
-class Border(pygame.sprite.Sprite):
-    def __init__(self, pos, size):
-        super().__init__()
-
-        self.image = pygame.Surface(size)
-        self.add_design()
-
-        self.rect = self.image.get_rect()
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
-
-    def add_design(self):
-        self.image.fill(BORDERCOLOR)
-
-        # Stripe
-        stripe = pygame.Surface(
-            (self.image.get_width() - (2 * (BORDER_WIDTH // 2)), self.image.get_height() - (2 * (BORDER_WIDTH // 2))))
-        stripe.fill(BACKGROUND)
-        self.image.blit(stripe, (BORDER_WIDTH // 2, BORDER_WIDTH // 2))
-
-class Hitbox(pygame.sprite.Sprite):
-    def __init__(self, sprite):
-        super().__init__()
-
-        self.image = pygame.Surface((sprite.image.get_width(), sprite.image.get_height()))
-
-        if isinstance(sprite, Player.Player):
-            self.image.fill(RED)
-        else:
-            self.image.fill(WHITE)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = sprite.rect.x
-        self.rect.y = sprite.rect.y
 
 

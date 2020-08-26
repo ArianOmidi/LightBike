@@ -1,15 +1,18 @@
-from Game import *
+from Util import *
+import pygame
 
 
 class Menu(object):
 
     # Create all our attributes and initialize the game.
-    def __init__(self, sound_player):
+    def __init__(self,):
         self.intro_screen = True
         self.instructions = False
         self.player_select = False
         self.powerup_select = False
         self.game_started = False
+
+        self.prev_mouse_index = -1
 
         self.player_color_list = []
         self.player_powerup_list = []
@@ -19,10 +22,19 @@ class Menu(object):
         self.header_font = font.Font("../resources/fonts/retronoid.ttf", 55)
         self.body_font = font.Font("../resources/fonts/retronoid.ttf", 40)
 
-        self.sound_player = sound_player
-        self.sound_player.play_theme_song()
+        SOUND_PLAYER.play_theme_song()
 
-        self.prev_mouse_index = -1
+    # --- RESET FUNCTION --- #
+
+    def return_to_player_selection(self):
+        self.player_select = True
+        self.game_started = False
+
+        self.player_color_list = []
+        self.player_powerup_list = []
+
+        SOUND_PLAYER.play_menu_continue()
+        SOUND_PLAYER.play_theme_song()
 
 
     # --- EVENT CONTROLLER --- #
@@ -41,17 +53,25 @@ class Menu(object):
                     if event.key == pygame.K_RETURN:
                         self.intro_screen = False
                         self.player_select = True
+
+                        SOUND_PLAYER.play_menu_continue()
                     elif event.key == pygame.K_SPACE:
                         self.intro_screen = False
                         self.instructions = True
+
+                        SOUND_PLAYER.play_menu_continue()
                 elif self.instructions:
                     if event.key == pygame.K_RETURN:
                         self.instructions = False
                         self.intro_screen = True
+
+                        SOUND_PLAYER.play_menu_continue()
                 elif self.player_select and len(self.player_color_list) == NUM_OF_PLAYERS:
                     if event.key == pygame.K_RETURN:
                         self.player_select = False
                         self.powerup_select = True
+
+                        SOUND_PLAYER.play_menu_continue()
                 elif self.powerup_select and len(self.player_powerup_list) == NUM_OF_PLAYERS:
                     if event.key == pygame.K_RETURN:
                         self.powerup_select = False
@@ -60,6 +80,8 @@ class Menu(object):
                         self.player_attributes = [[self.player_color_list[0], self.player_powerup_list[0]],
                                                   [self.player_color_list[1], self.player_powerup_list[1]]]
 
+                        SOUND_PLAYER.play_menu_continue()
+
             # Player Select
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.player_select:
@@ -67,16 +89,17 @@ class Menu(object):
 
                     if mouse_on_color != None and len(self.player_color_list) < NUM_OF_PLAYERS:
                         self.player_color_list.append(mouse_on_color)
-                        self.sound_player.play_menu_action()
+                        SOUND_PLAYER.play_menu_action()
                 elif self.powerup_select:
                     mouse_on_powerup = self.mouse_on_powerup()
 
                     if mouse_on_powerup != None and len(self.player_powerup_list) < NUM_OF_PLAYERS:
                         self.player_powerup_list.append(mouse_on_powerup)
-                        self.sound_player.play_menu_action()
+                        SOUND_PLAYER.play_menu_action()
 
 
         return False
+
 
     # --- DRAWING --- #
 
@@ -133,7 +156,7 @@ class Menu(object):
 
             if mouse_on_color != None:
                 if self.prev_mouse_index != getColorIndex(mouse_on_color):
-                    self.sound_player.play_menu_highlight()
+                    SOUND_PLAYER.play_menu_highlight()
 
                 screen.blit(image, (self.bike_pos[getColorIndex(mouse_on_color)][0] - PLAYER_SELECT_OFFSET,
                                     self.bike_pos[getColorIndex(mouse_on_color)][
@@ -200,7 +223,7 @@ class Menu(object):
 
             if mouse_on_powerup != None:
                 if self.prev_mouse_index != getPowerupIndex(mouse_on_powerup):
-                    self.sound_player.play_menu_highlight()
+                    SOUND_PLAYER.play_menu_highlight()
 
                 screen.blit(image, (self.powerup_pos[getPowerupIndex(mouse_on_powerup)][0] - PLAYER_SELECT_OFFSET,
                                     self.powerup_pos[getPowerupIndex(mouse_on_powerup)][
@@ -220,6 +243,9 @@ class Menu(object):
 
 
         pygame.display.update()
+
+
+     # --- MOUSE POSITION FUNCTIONS --- #
 
     def mouse_in_color(self):
         # mouse position
@@ -280,9 +306,4 @@ class Menu(object):
             return None
 
 
-    def return_to_player_selection(self):
-        self.player_select = True
-        self.game_started = False
 
-        self.player_color_list = []
-        self.player_powerup_list = []

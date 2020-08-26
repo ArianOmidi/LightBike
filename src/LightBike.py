@@ -1,8 +1,8 @@
-import pygame
-
+from Util import *
 from Game import Game
 from Menu import Menu
-from Util import *
+
+import pygame
 
 
 class LightBike(object):
@@ -19,12 +19,8 @@ class LightBike(object):
         self.done = False
         self.clock = pygame.time.Clock()
 
-        self.sound_player = SOUND_PLAYER
-
         self.game = None
-        self.menu = Menu(self.sound_player)
-
-
+        self.menu = Menu()
 
 
     def run(self):
@@ -39,7 +35,7 @@ class LightBike(object):
                 self.menu.display_frame(self.screen)
             else:
                 if self.game == None:
-                    self.game = Game(self.sound_player, self.menu.player_attributes)
+                    self.game = Game(self.menu.player_attributes)
 
                 # Process events (keystrokes, mouse clicks, etc)
                 self.done = self.game.process_events()
@@ -48,7 +44,6 @@ class LightBike(object):
                 if self.game.menu_selected:
                     self.game = None
                     self.menu.return_to_player_selection()
-                    self.sound_player.play_theme_song()
                     continue
 
                 # # Update object positions, check for collisions
