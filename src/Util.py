@@ -73,7 +73,7 @@ VELOCITY = 3
 
 # --- BOOSTER --- #
 BOOST_TRAIL_DIVIDER = 3
-SPEED_BOOST_FACTOR = 3
+SPEED_BOOST_FACTOR = 2
 BOOSTER_POWERUP_TIME = 3.5
 BOOSTER_POWERUP_NUM = 3
 
@@ -87,9 +87,9 @@ INVISIBLE_POWERUP_TIME = 2.5
 INVISIBLE_POWERUP_NUM = 3
 
 # --- BUILDER --- #
-BUILDER_POWERUP_TIME = 1.5
-WALL_SPEED_FACTOR = 2
-BUILDER_POWERUP_NUM = 5
+BUILDER_POWERUP_TIME = 2
+WALL_SPEED_FACTOR = 1.5
+BUILDER_POWERUP_NUM = 4
 
 """ --- GAME VARIABLES --- """
 FPS = 40
@@ -108,22 +108,22 @@ POWERUP_SELECTION_ICON_SIZE = 150
 
 """ --- IMAGES --- """
 
-EXPLOSION = image.load("../resources/images/explosions/explosion.png")
+EXPLOSION = image.load("resources/images/explosions/explosion.png")
 
-HEART = image.load("../resources/images/icons/heart.png")
-EMPTY_HEART = image.load("../resources/images/icons/empty_heart.png")
-POWERUP_ICON = image.load("../resources/images/icons/powerup_icon.png")
-EMPTY_POWERUP_ICON = image.load("../resources/images/icons/empty_powerup_icon.png")
+HEART = image.load("resources/images/icons/heart.png")
+EMPTY_HEART = image.load("resources/images/icons/empty_heart.png")
+POWERUP_ICON = image.load("resources/images/icons/powerup_icon.png")
+EMPTY_POWERUP_ICON = image.load("resources/images/icons/empty_powerup_icon.png")
 
-BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/bikes_sprite_sheet.png")
-POWERUP_BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/bikes_sprite_sheet_powerup.png")
-ICON_BIKES_SHEET = SpriteSheet("../resources/images/sprite_sheets/icon_bikes_sprite_sheet.png")
-PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("../resources/images/sprite_sheets/player_select_bike_sheet.png")
-POWERUP_SELECTION_SHEET = SpriteSheet("../resources/images/sprite_sheets/powerup_sheet.png")
+BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/bikes_sprite_sheet.png")
+POWERUP_BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/bikes_sprite_sheet_powerup.png")
+ICON_BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/icon_bikes_sprite_sheet.png")
+PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("resources/images/sprite_sheets/player_select_bike_sheet.png")
+POWERUP_SELECTION_SHEET = SpriteSheet("resources/images/sprite_sheets/powerup_sheet.png")
 
-INTRO_SCREEN = image.load("../resources/images/backgrounds/intro_screen.png")
-PLAYER_SELECT_SCREEN = image.load("../resources/images/backgrounds/empty_menu_screen.png")
-INSTRUCTION_SCREEN = image.load("../resources/images/backgrounds/instruction_screen.png")
+INTRO_SCREEN = image.load("resources/images/backgrounds/intro_screen.png")
+PLAYER_SELECT_SCREEN = image.load("resources/images/backgrounds/empty_menu_screen.png")
+INSTRUCTION_SCREEN = image.load("resources/images/backgrounds/instruction_screen.png")
 
 SOUND_PLAYER = SoundPlayer()
 
@@ -142,7 +142,7 @@ def init_fonts(game):
     DRAW_TEXT = []
     CONTINUE_TEXT = []
 
-    fontObj = font.Font("../resources/fonts/retronoid.ttf", 50)
+    fontObj = font.Font("resources/fonts/retronoid.ttf", 50)
 
     LOGO_ICON.append(fontObj.render("Light Bike", True, TEXT_COLOR))
     LOGO_ICON.append(LOGO_ICON[0].get_rect())
@@ -150,7 +150,7 @@ def init_fonts(game):
 
     LOGO_ICON.append(fontObj.render("Light Bike", True, DARK_TEXT_COLOR))
 
-    fontObj = font.Font("../resources/fonts/retronoid.ttf", 40)
+    fontObj = font.Font("resources/fonts/retronoid.ttf", 40)
 
     P1_TEXT.append(fontObj.render("P1", True, TEXT_COLOR))
     P1_TEXT.append(P1_TEXT[0].get_rect())
@@ -160,13 +160,13 @@ def init_fonts(game):
     P2_TEXT.append(P2_TEXT[0].get_rect())
     P2_TEXT[1].center = (SCREEN_WIDTH - 40, BORDER_TOP_OFFSET // 2)
 
-    fontObj = font.Font("../resources/fonts/retronoid.ttf", 100)
+    fontObj = font.Font("resources/fonts/retronoid.ttf", 100)
 
     GAME_OVER_TEXT.append(fontObj.render("Game Over", True, TEXT_COLOR))
     GAME_OVER_TEXT.append(GAME_OVER_TEXT[0].get_rect())
     GAME_OVER_TEXT[1].center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
-    fontObj = font.Font("../resources/fonts/retronoid.ttf", 50)
+    fontObj = font.Font("resources/fonts/retronoid.ttf", 50)
 
     P1_WINS_TEXT.append(fontObj.render("Player 1 Wins", True, getTrailColor(game.player_one.color, None)))
     P1_WINS_TEXT.append(P1_WINS_TEXT[0].get_rect())
@@ -182,7 +182,7 @@ def init_fonts(game):
     DRAW_TEXT[1].center = (
         SCREEN_WIDTH // 2, (SCREEN_HEIGHT - DRAW_TEXT[0].get_height()) // 2 + GAME_OVER_TEXT[0].get_height())
 
-    fontObj = font.Font("../resources/fonts/retronoid.ttf", 20)
+    fontObj = font.Font("resources/fonts/retronoid.ttf", 20)
 
     CONTINUE_TEXT.append(fontObj.render("Press Enter To Exit To Bike Selection", True, TEXT_COLOR))
     CONTINUE_TEXT.append((SCREEN_WIDTH - 2 * BORDER_WIDTH - CONTINUE_TEXT[0].get_width(),
@@ -432,7 +432,7 @@ def getPowerupColor(index):
 
 
 def blit_text(text, font_style, size, color, center, screen):
-    fontObj = font.Font("../resources/fonts/" + font_style + ".ttf", size)
+    fontObj = font.Font("resources/fonts/" + font_style + ".ttf", size)
     textObj = fontObj.render(text, True, color)
 
     textRect = textObj.get_rect()
