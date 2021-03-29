@@ -1,6 +1,6 @@
-from Util import *
-import pygame
+from utils.Util import *
 
+import pygame
 
 class Border(pygame.sprite.Sprite):
     def __init__(self, pos, size):

@@ -1,6 +1,6 @@
-from Util import *
-from Game import Game
-from Menu import Menu
+from utils.Util import *
+from game.Game import Game
+from game.gui.Menu import Menu
 
 import pygame
 
@@ -55,7 +55,6 @@ class LightBike(object):
             # Pause for the next frame
             self.clock.tick(FPS)
 
-            # print(clock.get_fps())
 
         # Close window and exit
         pygame.quit()
@@ -63,5 +62,4 @@ class LightBike(object):
 
 # Call the main function, start up the game
 if __name__ == "__main__":
-    light_bike = LightBike()
-    light_bike.run()
+    LightBike().run()

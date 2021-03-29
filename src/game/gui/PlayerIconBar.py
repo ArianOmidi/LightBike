@@ -1,4 +1,4 @@
-from Util import *
+from utils.Util import *
 
 
 class PlayerIconBar(object):

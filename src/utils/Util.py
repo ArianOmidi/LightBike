@@ -1,14 +1,22 @@
+from utils.Resources import *
+from utils.SoundPlayer import SoundPlayer
+
 from PIL import Image
 from pygame import Surface
 from pygame import font
 from pygame import image
 from pygame import init
 
-from SoundPlayer import SoundPlayer
 
 init()
 
-# --- CLASSES --- #
+
+""" --- SINGLETON --- """
+
+SOUND_PLAYER = SoundPlayer()
+
+
+""" --- CLASSES --- """
 
 class SpriteSheet(object):
     """ Class used to grab images out of a sprite sheet. """
@@ -41,94 +49,27 @@ class SpriteSheet(object):
         return image
 
 
-""" --- CONSTANTS --- """
-
-# --- COLORS --- #
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BACKGROUND = (10, 10, 10)
-GRIDCOLOR = (0, 25, 0)
-BORDERCOLOR = (0, 50, 0)
-TEXT_COLOR = (230, 230, 230)
-DARK_TEXT_COLOR = (97, 97, 97)
-
-# --- TRAIL COLORS --- #
-RED = (232, 12, 12)
-TRAILRED = (191, 19, 19)
-BOOSTREDTRAIL = (237, 60, 47)
-YELLOW = (255, 247, 0)
-GREEN = (0, 255, 0)
-BLUE = (117, 164, 255)
-
-# --- DESIGN VARIABLES --- #
-BORDER_WIDTH = 5
-GRIDLINES = 10
-
-""" --- PLAYER VARIABLES --- """
-
-PLAYER_WIDTH = 11
-TRAIL_SIZE = 3
-PLAYER_LIVES = 3
-VELOCITY = 3
-
-# --- BOOSTER --- #
-BOOST_TRAIL_DIVIDER = 3
-SPEED_BOOST_FACTOR = 2
-BOOSTER_POWERUP_TIME = 3.5
-BOOSTER_POWERUP_NUM = 3
-
-# --- JUMPER --- #
-JUMP_TIME = 0.5
-JUMPER_POWERUP_TIME = 4
-JUMPER_POWERUP_NUM = 3
-
-# --- GHOST --- #
-INVISIBLE_POWERUP_TIME = 2.5
-INVISIBLE_POWERUP_NUM = 3
-
-# --- BUILDER --- #
-BUILDER_POWERUP_TIME = 2
-WALL_SPEED_FACTOR = 1.5
-BUILDER_POWERUP_NUM = 4
-
-""" --- GAME VARIABLES --- """
-FPS = 40
-SCREEN_HEIGHT = 750
-SCREEN_WIDTH = 1400
-BORDER_TOP_OFFSET = 55
-PLAYER_ONE_STARTING_POS = (SCREEN_WIDTH * 1 / 10, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) / 5)
-PLAYER_TWO_STARTING_POS = (
-SCREEN_WIDTH * 9 / 10 - 2 * PLAYER_WIDTH, (SCREEN_HEIGHT + BORDER_TOP_OFFSET - PLAYER_WIDTH) * 4 / 5)
-NUM_OF_PLAYERS = 2
-
-PLAYER_SELECT_OFFSET = 25
-PLAYER_SELECT_BORDER = 10
-
-POWERUP_SELECTION_ICON_SIZE = 150
-
 """ --- IMAGES --- """
 
-EXPLOSION = image.load("resources/images/explosions/explosion.png")
+EXPLOSION = image.load(EXPLOISION_PATH)
 
-HEART = image.load("resources/images/icons/heart.png")
-EMPTY_HEART = image.load("resources/images/icons/empty_heart.png")
-POWERUP_ICON = image.load("resources/images/icons/powerup_icon.png")
-EMPTY_POWERUP_ICON = image.load("resources/images/icons/empty_powerup_icon.png")
+HEART = image.load(HEART_PATH)
+EMPTY_HEART = image.load(EMPTY_HEART_PATH)
+POWERUP_ICON = image.load(POWERUP_ICON_PATH)
+EMPTY_POWERUP_ICON = image.load(EMPTY_POWERUP_ICON_PATH)
 
-BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/bikes_sprite_sheet.png")
-POWERUP_BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/bikes_sprite_sheet_powerup.png")
-ICON_BIKES_SHEET = SpriteSheet("resources/images/sprite_sheets/icon_bikes_sprite_sheet.png")
-PLAYER_SELECTION_BIKE_SHEET = SpriteSheet("resources/images/sprite_sheets/player_select_bike_sheet.png")
-POWERUP_SELECTION_SHEET = SpriteSheet("resources/images/sprite_sheets/powerup_sheet.png")
+BIKES_SHEET = SpriteSheet(BIKES_SHEET_PATH)
+POWERUP_BIKES_SHEET = SpriteSheet(POWERUP_BIKES_SHEET_PATH)
+ICON_BIKES_SHEET = SpriteSheet(ICON_BIKES_SHEET_PATH)
+PLAYER_SELECTION_BIKE_SHEET = SpriteSheet(PLAYER_SELECTION_BIKE_SHEET_PATH)
+POWERUP_SELECTION_SHEET = SpriteSheet(POWERUP_SELECTION_SHEET_PATH)
 
-INTRO_SCREEN = image.load("resources/images/backgrounds/intro_screen.png")
-PLAYER_SELECT_SCREEN = image.load("resources/images/backgrounds/empty_menu_screen.png")
-INSTRUCTION_SCREEN = image.load("resources/images/backgrounds/instruction_screen.png")
-
-SOUND_PLAYER = SoundPlayer()
+INTRO_SCREEN = image.load(INTRO_SCREEN_PATH)
+PLAYER_SELECT_SCREEN = image.load(PLAYER_SELECT_SCREEN_PATH)
+INSTRUCTION_SCREEN = image.load(INSTRUCTION_SCREEN_PATH)
 
 
-# --- INIT FONTS --- # (Reduces lag)
+""" --- INIT FONTS (Reduces lag) --- """
 
 def init_fonts(game):
     global LOGO_ICON, P1_TEXT, P2_TEXT, GAME_OVER_TEXT, P1_WINS_TEXT, P2_WINS_TEXT, CONTINUE_TEXT, DRAW_TEXT
@@ -142,7 +83,7 @@ def init_fonts(game):
     DRAW_TEXT = []
     CONTINUE_TEXT = []
 
-    fontObj = font.Font("resources/fonts/retronoid.ttf", 50)
+    fontObj = font.Font(RETRONOID_FONT, 50)
 
     LOGO_ICON.append(fontObj.render("Light Bike", True, TEXT_COLOR))
     LOGO_ICON.append(LOGO_ICON[0].get_rect())
@@ -150,7 +91,7 @@ def init_fonts(game):
 
     LOGO_ICON.append(fontObj.render("Light Bike", True, DARK_TEXT_COLOR))
 
-    fontObj = font.Font("resources/fonts/retronoid.ttf", 40)
+    fontObj = font.Font(RETRONOID_FONT, 40)
 
     P1_TEXT.append(fontObj.render("P1", True, TEXT_COLOR))
     P1_TEXT.append(P1_TEXT[0].get_rect())
@@ -160,13 +101,13 @@ def init_fonts(game):
     P2_TEXT.append(P2_TEXT[0].get_rect())
     P2_TEXT[1].center = (SCREEN_WIDTH - 40, BORDER_TOP_OFFSET // 2)
 
-    fontObj = font.Font("resources/fonts/retronoid.ttf", 100)
+    fontObj = font.Font(RETRONOID_FONT, 100)
 
     GAME_OVER_TEXT.append(fontObj.render("Game Over", True, TEXT_COLOR))
     GAME_OVER_TEXT.append(GAME_OVER_TEXT[0].get_rect())
     GAME_OVER_TEXT[1].center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
-    fontObj = font.Font("resources/fonts/retronoid.ttf", 50)
+    fontObj = font.Font(RETRONOID_FONT, 50)
 
     P1_WINS_TEXT.append(fontObj.render("Player 1 Wins", True, getTrailColor(game.player_one.color, None)))
     P1_WINS_TEXT.append(P1_WINS_TEXT[0].get_rect())
@@ -182,7 +123,7 @@ def init_fonts(game):
     DRAW_TEXT[1].center = (
         SCREEN_WIDTH // 2, (SCREEN_HEIGHT - DRAW_TEXT[0].get_height()) // 2 + GAME_OVER_TEXT[0].get_height())
 
-    fontObj = font.Font("resources/fonts/retronoid.ttf", 20)
+    fontObj = font.Font(RETRONOID_FONT, 20)
 
     CONTINUE_TEXT.append(fontObj.render("Press Enter To Exit To Bike Selection", True, TEXT_COLOR))
     CONTINUE_TEXT.append((SCREEN_WIDTH - 2 * BORDER_WIDTH - CONTINUE_TEXT[0].get_width(),
@@ -193,7 +134,7 @@ def init_fonts(game):
                           SCREEN_HEIGHT - BORDER_WIDTH - CONTINUE_TEXT[0].get_height() - CONTINUE_TEXT[2].get_height()))
 
 
-# --- FUNCTIONS --- #
+""" --- FUNCTIONS --- """
 
 def sign(x):
     if (x == 0):

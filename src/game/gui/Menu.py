@@ -1,4 +1,4 @@
-from Util import *
+from utils.Util import *
 import pygame
 
 
@@ -18,9 +18,9 @@ class Menu(object):
         self.player_powerup_list = []
         self.player_attributes = []
 
-        self.title_font = font.Font("resources/fonts/retronoid.ttf", 65)
-        self.header_font = font.Font("resources/fonts/retronoid.ttf", 55)
-        self.body_font = font.Font("resources/fonts/retronoid.ttf", 40)
+        self.title_font = font.Font(RETRONOID_FONT, 65)
+        self.header_font = font.Font(RETRONOID_FONT, 55)
+        self.body_font = font.Font(RETRONOID_FONT, 40)
 
         SOUND_PLAYER.play_theme_song()
 

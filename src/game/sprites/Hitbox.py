@@ -1,7 +1,7 @@
-from Util import *
-from Player import Player
-import pygame
+from utils.Util import *
+from ..sprites.player.Player import Player
 
+import pygame
 
 class Hitbox(pygame.sprite.Sprite):
     def __init__(self, sprite):

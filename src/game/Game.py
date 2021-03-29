@@ -1,14 +1,14 @@
-from Util import *
+from utils.Util import *
 
-from Player import Booster
-from Player import Ghost
-from Player import Builder
-from Player import Jumper
+from .sprites.player.Booster import Booster
+from .sprites.player.Ghost import Ghost
+from .sprites.player.Builder import Builder
+from .sprites.player.Jumper import Jumper
 
-from Trail import Wall
-from Border import Border
-from Hitbox import Hitbox
-from PlayerIconBar import PlayerIconBar
+from .sprites.trail.Wall import Wall
+from .sprites.Border import Border
+from .sprites.Hitbox import Hitbox
+from .gui.PlayerIconBar import PlayerIconBar
 
 import pygame
 

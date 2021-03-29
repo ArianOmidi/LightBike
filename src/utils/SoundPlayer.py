@@ -1,3 +1,5 @@
+from utils.Resources import *
+
 from pygame import mixer
 
 
@@ -6,21 +8,21 @@ class SoundPlayer(object):
     def __init__(self):
         mixer.pre_init(44100, 16, 2, 4096)
 
-        self.theme_song = mixer.music.load("resources/audio/lightbike_theme_song.wav")
+        self.theme_song = mixer.music.load(THEME_SONG)
 
-        self.menu_highlight = mixer.Sound("resources/audio/menu_select.wav")
-        self.menu_action = mixer.Sound("resources/audio/menu_validate.wav")
-        self.menu_continue = mixer.Sound("resources/audio/menu_continue.wav")
+        self.menu_highlight = mixer.Sound(MENU_HIGHLIGHT_AUDIO)
+        self.menu_action = mixer.Sound(MENU_ACTION_AUDIO)
+        self.menu_continue = mixer.Sound(MENU_CONTINUE_AUDIO)
 
-        self.round_start = mixer.Sound("resources/audio/round_start.wav")
-        self.round_reset = mixer.Sound("resources/audio/round_reset.wav")
-        self.game_over = mixer.Sound("resources/audio/game_over.wav")
-        self.crash = mixer.Sound("resources/audio/crash.wav")
+        self.round_start = mixer.Sound(ROUND_START_AUDIO)
+        self.round_reset = mixer.Sound(ROUND_RESET_AUDIO)
+        self.game_over = mixer.Sound(GAME_OVER_AUDIO)
+        self.crash = mixer.Sound(CRASH_AUDIO)
 
-        self.boost = mixer.Sound("resources/audio/boost.wav")
-        self.jump = mixer.Sound("resources/audio/jump.wav")
-        self.ghost = mixer.Sound("resources/audio/ghost.wav")
-        self.wall = mixer.Sound("resources/audio/wall.wav")
+        self.boost = mixer.Sound(BOOST_AUDIO)
+        self.jump = mixer.Sound(JUMP_AUDIO)
+        self.ghost = mixer.Sound(GHOST_AUDIO)
+        self.wall = mixer.Sound(WALL_AUDIO)
 
         self.menu_highlight.set_volume(0.5)
         self.menu_action.set_volume(0.6)
@@ -40,7 +42,6 @@ class SoundPlayer(object):
 
     def play_theme_song(self):
         mixer.music.stop()
-        # self.theme_song = mixer.music.load("resources/audio/lightbike_theme_song.wav")
         mixer.music.play(-1)
 
     def pause_theme_song(self):
